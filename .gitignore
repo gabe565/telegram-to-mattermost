@@ -1,0 +1,5 @@
+*.jsonl
+*.zip
+.DS_Store
+.idea/
+telegram-to-mattermost
