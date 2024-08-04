@@ -20,8 +20,6 @@ import (
 func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint64, error) {
 	slog.Info("Converting to Mattermost import", "path", conf.Output)
 
-	sizeWriter := &util.SizeWriter{}
-
 	mmUsers, err := MapAllUsers(conf, export)
 	conf.ChannelMembers = &mmUsers
 	if err := errors.Join(err, CheckEmails(conf, export)); err != nil {
@@ -37,7 +35,8 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 	}()
 
 	var zw *zip.Writer
-	w := io.Writer(f)
+	var w io.Writer
+	sizeWriter := &util.SizeWriter{}
 	if strings.EqualFold(filepath.Ext(conf.Output), ".zip") {
 		zw = zip.NewWriter(io.MultiWriter(f, sizeWriter))
 		defer func() {
@@ -48,6 +47,7 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 			return 0, err
 		}
 	} else {
+		w = io.MultiWriter(f, sizeWriter)
 		if !conf.NoAttachments {
 			slog.Warn(`Attachment paths will not be altered unless the output extension is ".zip"`)
 		}
