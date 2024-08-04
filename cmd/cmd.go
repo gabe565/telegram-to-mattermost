@@ -32,7 +32,7 @@ func run(cmd *cobra.Command, args []string) error {
 	if !ok {
 		panic("command missing context")
 	}
-	config.InitLog(false)
+	config.InitLog(nil)
 	conf.Input = args[0]
 
 	export, err := telegram.FromFile(filepath.Join(conf.Input, "result.json"))

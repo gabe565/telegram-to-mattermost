@@ -10,8 +10,7 @@ import (
 )
 
 func New(max int) *progressbar.ProgressBar {
-	config.InitLog(true)
-	return progressbar.NewOptions(max,
+	bar := progressbar.NewOptions(max,
 		progressbar.OptionSetWriter(os.Stderr),
 		progressbar.OptionFullWidth(),
 		progressbar.OptionThrottle(65*time.Millisecond),
@@ -21,7 +20,9 @@ func New(max int) *progressbar.ProgressBar {
 		progressbar.OptionShowElapsedTimeOnFinish(),
 		progressbar.OptionOnCompletion(func() {
 			_, _ = io.WriteString(os.Stderr, "\n")
-			config.InitLog(false)
+			config.InitLog(nil)
 		}),
 	)
+	config.InitLog(bar)
+	return bar
 }
