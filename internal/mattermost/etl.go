@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log/slog"
 	"os"
@@ -95,9 +96,10 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 	}
 
 	slog.Info("Generating posts", "count", len(export.Messages))
-	bar := progressbar.New(len(export.Messages))
+	bar := progressbar.New(len(export.Messages), progressbar.Right)
 	var attachments []string
-	for _, msg := range export.Messages {
+	for i, msg := range export.Messages {
+		bar.Describe(msg.Date().String())
 		if msg.From != "" {
 			var lines []imports.LineImportData
 			switch channelType {
@@ -151,6 +153,9 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 			}
 		}
 
+		if i == len(export.Messages)-1 {
+			bar.Describe("")
+		}
 		_ = bar.Add(1)
 	}
 	_ = bar.Finish()
@@ -158,8 +163,14 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 	if zw != nil {
 		if !conf.NoAttachments {
 			slog.Info("Zipping attachments (disable with --"+config.NoAttachmentsFlag+")", "count", len(attachments))
-			bar = progressbar.New(len(attachments))
-			for _, path := range attachments {
+			bar = progressbar.New(len(attachments), progressbar.Left)
+			for i, path := range attachments {
+				description := fmt.Sprintf("%-40s", filepath.Base(path))
+				if len(description) > 40 {
+					description = "…" + description[len(description)-39:]
+				}
+				bar.Describe(description)
+
 				attachW, err := zw.Create(filepath.Join("data", path))
 				if err != nil {
 					return 0, err
@@ -169,6 +180,9 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 					return 0, err
 				}
 
+				if i == len(attachments)-1 {
+					bar.Describe("")
+				}
 				_ = bar.Add(1)
 			}
 			_ = bar.Close()

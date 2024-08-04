@@ -10,12 +10,13 @@ import (
 
 func (e *Export) PostLoad() {
 	slog.Info("Running post-load actions")
-	bar := progressbar.New(len(e.Messages))
+	bar := progressbar.New(len(e.Messages), progressbar.Right)
 
 	var deleteIDs []int64
 	var replyCount, pinCount int
 
-	for _, msg := range e.Messages {
+	for i, msg := range e.Messages {
+		bar.Describe(msg.Date().String())
 		switch {
 		case msg.Event != nil && msg.Event.Action != nil:
 			switch *msg.Event.Action {
@@ -40,6 +41,9 @@ func (e *Export) PostLoad() {
 					break
 				}
 			}
+		}
+		if i == len(e.Messages)-1 {
+			bar.Describe("")
 		}
 		_ = bar.Add(1)
 	}
