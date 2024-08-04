@@ -11,6 +11,8 @@ import (
 	"github.com/gabe565/telegram-to-mattermost/internal/config"
 	"github.com/gabe565/telegram-to-mattermost/internal/telegram"
 	"github.com/gabe565/telegram-to-mattermost/internal/util"
+	"github.com/huandu/xstrings"
+	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/v8/channels/app/imports"
 	"github.com/mattermost/mattermost/server/v8/cmd/mmctl/commands/importer"
 	"k8s.io/utils/ptr"
@@ -28,7 +30,7 @@ func Version() *imports.LineImportData {
 	}
 }
 
-func User(user *config.User) *imports.LineImportData {
+func User(user *config.User, team *imports.TeamImportData) *imports.LineImportData {
 	userImport := &imports.UserImportData{
 		Username:           &user.Username,
 		Email:              &user.Username,
@@ -38,7 +40,40 @@ func User(user *config.User) *imports.LineImportData {
 		EmailInterval:      ptr.To("immediately"),
 	}
 
+	if team != nil {
+		if userImport.Teams == nil {
+			userImport.Teams = ptr.To(make([]imports.UserTeamImportData, 0, 1))
+		}
+		*userImport.Teams = append(*userImport.Teams, imports.UserTeamImportData{
+			Name:  team.Name,
+			Roles: ptr.To("team_user"),
+		})
+	}
+
 	return &imports.LineImportData{Type: importer.LineTypeUser, User: userImport}
+}
+
+func Team(export *telegram.Export) *imports.LineImportData {
+	return &imports.LineImportData{
+		Type: importer.LineTypeTeam,
+		Team: &imports.TeamImportData{
+			Name:        ptr.To(xstrings.ToKebabCase(export.Name)),
+			DisplayName: ptr.To(export.Name),
+			Type:        ptr.To("I"),
+		},
+	}
+}
+
+func Channel(team *imports.TeamImportData) *imports.LineImportData {
+	return &imports.LineImportData{
+		Type: importer.LineTypeChannel,
+		Channel: &imports.ChannelImportData{
+			Team:        team.Name,
+			Name:        team.Name,
+			DisplayName: team.DisplayName,
+			Type:        ptr.To(model.ChannelTypePrivate),
+		},
+	}
 }
 
 func DirectChannel(conf *config.Config) *imports.LineImportData {
@@ -50,42 +85,71 @@ func DirectChannel(conf *config.Config) *imports.LineImportData {
 	}
 }
 
-func DirectPost(conf *config.Config, msg *telegram.Message) (*imports.LineImportData, error) {
-	createAt, err := transformTimestamp(&msg.Date)
+func Post(conf *config.Config, team, channel string, msg *telegram.Message) (*imports.LineImportData, error) {
+	createAt, editAt, err := timestamps(msg)
 	if err != nil {
 		return nil, err
 	}
 
-	editAt, err := transformTimestamp(msg.Edited)
+	attachments, err := transformAttachment(conf, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	replies, err := transformReplies(conf, msg)
 	if err != nil {
 		return nil, err
 	}
 
 	user := conf.Users[msg.FromID]
+
+	post := &imports.PostImportData{
+		Team:        &team,
+		Channel:     &channel,
+		User:        &user.Username,
+		Message:     ptr.To(msg.FormatText(conf.MaxTextLength)),
+		CreateAt:    createAt,
+		EditAt:      editAt,
+		Replies:     replies,
+		Attachments: attachments,
+	}
+
+	if msg.IsPinned != nil && *msg.IsPinned == true {
+		post.IsPinned = ptr.To(true)
+	}
+
+	return &imports.LineImportData{
+		Type: importer.LineTypePost,
+		Post: post,
+	}, nil
+}
+
+func DirectPost(conf *config.Config, msg *telegram.Message) (*imports.LineImportData, error) {
+	createAt, editAt, err := timestamps(msg)
+	if err != nil {
+		return nil, err
+	}
+
+	attachments, err := transformAttachment(conf, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	replies, err := transformReplies(conf, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	user := conf.Users[msg.FromID]
+
 	post := &imports.DirectPostImportData{
 		ChannelMembers: conf.ChannelMembers,
 		User:           &user.Username,
 		Message:        ptr.To(msg.FormatText(conf.MaxTextLength)),
 		CreateAt:       createAt,
 		EditAt:         editAt,
-	}
-
-	if attachment, err := transformAttachment(conf, msg); err != nil {
-		return nil, err
-	} else if attachment != nil {
-		post.Attachments = &[]imports.AttachmentImportData{*attachment}
-	}
-
-	for msg := msg.Reply; msg != nil; msg = msg.Reply {
-		replyImport, err := Reply(conf, msg)
-		if err != nil {
-			return nil, err
-		}
-
-		if post.Replies == nil {
-			post.Replies = ptr.To(make([]imports.ReplyImportData, 0, 1))
-		}
-		*post.Replies = append(*post.Replies, *replyImport)
+		Replies:        replies,
+		Attachments:    attachments,
 	}
 
 	if msg.IsPinned != nil && *msg.IsPinned == true {
@@ -99,31 +163,39 @@ func DirectPost(conf *config.Config, msg *telegram.Message) (*imports.LineImport
 }
 
 func Reply(conf *config.Config, msg *telegram.Message) (*imports.ReplyImportData, error) {
-	createAt, err := transformTimestamp(&msg.Date)
+	createAt, editAt, err := timestamps(msg)
 	if err != nil {
 		return nil, err
 	}
 
-	editAt, err := transformTimestamp(msg.Edited)
+	attachments, err := transformAttachment(conf, msg)
 	if err != nil {
 		return nil, err
 	}
 
 	user := conf.Users[msg.FromID]
-	post := &imports.ReplyImportData{
-		User:     &user.Username,
-		Message:  ptr.To(msg.FormatText(conf.MaxTextLength)),
-		CreateAt: createAt,
-		EditAt:   editAt,
+
+	return &imports.ReplyImportData{
+		User:        &user.Username,
+		Message:     ptr.To(msg.FormatText(conf.MaxTextLength)),
+		CreateAt:    createAt,
+		EditAt:      editAt,
+		Attachments: attachments,
+	}, nil
+}
+
+func timestamps(msg *telegram.Message) (*int64, *int64, error) {
+	createAt, err := transformTimestamp(&msg.Date)
+	if err != nil {
+		return nil, nil, err
 	}
 
-	if attachment, err := transformAttachment(conf, msg); err != nil {
-		return nil, err
-	} else if attachment != nil {
-		post.Attachments = &[]imports.AttachmentImportData{*attachment}
+	editAt, err := transformTimestamp(msg.Edited)
+	if err != nil {
+		return nil, nil, err
 	}
 
-	return post, nil
+	return createAt, editAt, nil
 }
 
 func transformTimestamp(v *json.Number) (*int64, error) {
@@ -139,7 +211,23 @@ func transformTimestamp(v *json.Number) (*int64, error) {
 	return &parsed, nil
 }
 
-func transformAttachment(conf *config.Config, msg *telegram.Message) (*imports.AttachmentImportData, error) {
+func transformReplies(conf *config.Config, msg *telegram.Message) (*[]imports.ReplyImportData, error) {
+	var replies []imports.ReplyImportData
+	for msg := msg.Reply; msg != nil; msg = msg.Reply {
+		replyImport, err := Reply(conf, msg)
+		if err != nil {
+			return nil, err
+		}
+
+		replies = append(replies, *replyImport)
+	}
+	if len(replies) == 0 {
+		return nil, nil
+	}
+	return &replies, nil
+}
+
+func transformAttachment(conf *config.Config, msg *telegram.Message) (*[]imports.AttachmentImportData, error) {
 	if conf.NoAttachments {
 		return nil, nil
 	}
@@ -172,5 +260,5 @@ func transformAttachment(conf *config.Config, msg *telegram.Message) (*imports.A
 		}
 	}
 
-	return &imports.AttachmentImportData{Path: &path}, nil //dst.Close()
+	return &[]imports.AttachmentImportData{{Path: &path}}, nil //dst.Close()
 }

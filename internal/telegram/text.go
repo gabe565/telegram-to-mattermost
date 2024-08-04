@@ -14,9 +14,10 @@ const (
 	TypeLink
 	TypeTextLink
 	TypeBold
-	TypeMention
 	TypeHashtag
 	TypeItalic
+	TypeMention
+	TypeMentionName
 	TypeEmail
 	TypePhone
 	TypeCode
@@ -37,6 +38,8 @@ func (m *Message) FormatText(maxLen uint) string {
 			}
 		case TypeBold:
 			n += 4
+		case TypeMentionName:
+			n += 1
 		case TypeEmail:
 			n += len(e.Text) + 11
 		case TypePhone:
@@ -75,6 +78,9 @@ func (m *Message) FormatText(maxLen uint) string {
 			buf.WriteByte('_')
 			buf.WriteString(e.Text)
 			buf.WriteByte('_')
+		case TypeMentionName: // TODO: Handle user ID
+			buf.WriteByte('@')
+			buf.WriteString(e.Text)
 		case TypeEmail:
 			buf.WriteByte('[')
 			buf.WriteString(e.Text)

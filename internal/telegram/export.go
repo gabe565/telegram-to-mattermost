@@ -34,6 +34,7 @@ type ExportType uint8
 
 const (
 	TypePersonalChat ExportType = iota
+	TypePrivateGroup ExportType = iota
 )
 
 type Message struct {

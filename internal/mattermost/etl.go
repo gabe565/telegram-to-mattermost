@@ -14,6 +14,8 @@ import (
 	"github.com/gabe565/telegram-to-mattermost/internal/progressbar"
 	"github.com/gabe565/telegram-to-mattermost/internal/telegram"
 	"github.com/gabe565/telegram-to-mattermost/internal/util"
+	"github.com/mattermost/mattermost/server/v8/channels/app/imports"
+	"github.com/mattermost/mattermost/server/v8/cmd/mmctl/commands/importer"
 	"golang.org/x/image/webp"
 )
 
@@ -53,18 +55,43 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 		return 0, err
 	}
 
+	var channelType string
+	if len(export.Users()) > 8 {
+		channelType = importer.LineTypeChannel
+	} else {
+		channelType = importer.LineTypeDirectChannel
+	}
+
+	var team *imports.TeamImportData
+	var channel *imports.ChannelImportData
+	if channelType == importer.LineTypeChannel {
+		teamLine := Team(export)
+		team = teamLine.Team
+		if err := encoder.Encode(teamLine); err != nil {
+			return 0, err
+		}
+
+		channelLine := Channel(team)
+		channel = channelLine.Channel
+		if err := encoder.Encode(channelLine); err != nil {
+			return 0, err
+		}
+	}
+
 	if conf.CreateUsers {
 		users := conf.Users
 		slog.Info("Generating users", "count", len(users))
 		for _, user := range users {
-			if err := encoder.Encode(User(user)); err != nil {
+			if err := encoder.Encode(User(user, team)); err != nil {
 				return 0, err
 			}
 		}
 	}
 
-	if err := encoder.Encode(DirectChannel(conf)); err != nil {
-		return 0, err
+	if channelType == importer.LineTypeDirectChannel {
+		if err := encoder.Encode(DirectChannel(conf)); err != nil {
+			return 0, err
+		}
 	}
 
 	slog.Info("Generating posts", "count", len(export.Messages))
@@ -76,12 +103,20 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 			continue
 		}
 
-		line, err := DirectPost(conf, msg)
-		if err != nil {
-			return 0, err
+		var line *imports.LineImportData
+		switch channelType {
+		case importer.LineTypeChannel:
+			if line, err = Post(conf, *team.Name, *channel.Name, msg); err != nil {
+				return 0, err
+			}
+		case importer.LineTypeDirectChannel:
+			if line, err = DirectPost(conf, msg); err != nil {
+				return 0, err
+			}
 		}
 
-		if line.DirectPost != nil {
+		switch {
+		case line.DirectPost != nil:
 			if line.DirectPost.Attachments != nil {
 				for _, attachment := range *line.DirectPost.Attachments {
 					attachments = append(attachments, *attachment.Path)
@@ -89,6 +124,21 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 			}
 			if line.DirectPost.Replies != nil {
 				for _, msg := range *line.DirectPost.Replies {
+					if msg.Attachments != nil {
+						for _, attachment := range *msg.Attachments {
+							attachments = append(attachments, *attachment.Path)
+						}
+					}
+				}
+			}
+		case line.Post != nil:
+			if line.Post.Attachments != nil {
+				for _, attachment := range *line.Post.Attachments {
+					attachments = append(attachments, *attachment.Path)
+				}
+			}
+			if line.Post.Replies != nil {
+				for _, msg := range *line.Post.Replies {
 					if msg.Attachments != nil {
 						for _, attachment := range *msg.Attachments {
 							attachments = append(attachments, *attachment.Path)
