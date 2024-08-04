@@ -2,7 +2,10 @@ package telegram
 
 import (
 	"log/slog"
+	"strconv"
 	"strings"
+
+	"github.com/gabe565/telegram-to-mattermost/internal/config"
 )
 
 //go:generate enumer -type TextEntityType -trimprefix Type -transform snake -text
@@ -24,7 +27,7 @@ const (
 	TypePre
 )
 
-func (m *Message) FormatText(maxLen uint) string {
+func (m *Message) FormatText(conf *config.Config) string {
 	var n int
 	for _, e := range m.TextEntities {
 		n += len(e.Text)
@@ -78,9 +81,18 @@ func (m *Message) FormatText(maxLen uint) string {
 			buf.WriteByte('_')
 			buf.WriteString(e.Text)
 			buf.WriteByte('_')
-		case TypeMentionName: // TODO: Handle user ID
+		case TypeMentionName:
 			buf.WriteByte('@')
-			buf.WriteString(e.Text)
+			if e.UserID != nil {
+				user := conf.Users["user"+strconv.Itoa(int(*e.UserID))]
+				if user != nil {
+					buf.WriteString(user.Username)
+				} else {
+					buf.WriteString(e.Text)
+				}
+			} else {
+				buf.WriteString(e.Text)
+			}
 		case TypeEmail:
 			buf.WriteByte('[')
 			buf.WriteString(e.Text)
@@ -107,9 +119,9 @@ func (m *Message) FormatText(maxLen uint) string {
 			buf.WriteString("\n```")
 		}
 	}
-	if buf.Len() > int(maxLen) {
+	if buf.Len() > int(conf.MaxTextLength) {
 		slog.Warn("Truncating message", "length", buf.Len(), "id", m.ID, "from", m.From, "timestamp", m.Date().String())
-		return buf.String()[:maxLen]
+		return buf.String()[:conf.MaxTextLength]
 	}
 	return buf.String()
 }

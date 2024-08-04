@@ -103,7 +103,7 @@ func Post(conf *config.Config, team, channel string, msg *telegram.Message) (*im
 		Team:        &team,
 		Channel:     &channel,
 		User:        &user.Username,
-		Message:     ptr.To(msg.FormatText(conf.MaxTextLength)),
+		Message:     ptr.To(msg.FormatText(conf)),
 		CreateAt:    createAt,
 		EditAt:      editAt,
 		Replies:     replies,
@@ -138,7 +138,7 @@ func DirectPost(conf *config.Config, msg *telegram.Message) (*imports.LineImport
 	post := &imports.DirectPostImportData{
 		ChannelMembers: conf.ChannelMembers,
 		User:           &user.Username,
-		Message:        ptr.To(msg.FormatText(conf.MaxTextLength)),
+		Message:        ptr.To(msg.FormatText(conf)),
 		CreateAt:       createAt,
 		EditAt:         editAt,
 		Replies:        replies,
@@ -167,7 +167,7 @@ func Reply(conf *config.Config, msg *telegram.Message) (*imports.ReplyImportData
 
 	return &imports.ReplyImportData{
 		User:        &user.Username,
-		Message:     ptr.To(msg.FormatText(conf.MaxTextLength)),
+		Message:     ptr.To(msg.FormatText(conf)),
 		CreateAt:    createAt,
 		EditAt:      editAt,
 		Attachments: attachments,
