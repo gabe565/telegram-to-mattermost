@@ -98,61 +98,60 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 	bar := progressbar.New(len(export.Messages))
 	var attachments []string
 	for _, msg := range export.Messages {
+		if msg.From != "" {
+			var lines []imports.LineImportData
+			switch channelType {
+			case importer.LineTypeChannel:
+				if lines, err = Post(conf, *team.Name, *channel.Name, msg); err != nil {
+					return 0, err
+				}
+			case importer.LineTypeDirectChannel:
+				if lines, err = DirectPost(conf, msg); err != nil {
+					return 0, err
+				}
+			}
+
+			for _, line := range lines {
+				switch {
+				case line.DirectPost != nil:
+					if line.DirectPost.Attachments != nil {
+						for _, attachment := range *line.DirectPost.Attachments {
+							attachments = append(attachments, *attachment.Path)
+						}
+					}
+					if line.DirectPost.Replies != nil {
+						for _, msg := range *line.DirectPost.Replies {
+							if msg.Attachments != nil {
+								for _, attachment := range *msg.Attachments {
+									attachments = append(attachments, *attachment.Path)
+								}
+							}
+						}
+					}
+				case line.Post != nil:
+					if line.Post.Attachments != nil {
+						for _, attachment := range *line.Post.Attachments {
+							attachments = append(attachments, *attachment.Path)
+						}
+					}
+					if line.Post.Replies != nil {
+						for _, msg := range *line.Post.Replies {
+							if msg.Attachments != nil {
+								for _, attachment := range *msg.Attachments {
+									attachments = append(attachments, *attachment.Path)
+								}
+							}
+						}
+					}
+				}
+
+				if err := encoder.Encode(line); err != nil {
+					return 0, err
+				}
+			}
+		}
+
 		_ = bar.Add(1)
-		if msg.From == "" {
-			continue
-		}
-
-		var lines []imports.LineImportData
-		switch channelType {
-		case importer.LineTypeChannel:
-			if lines, err = Post(conf, *team.Name, *channel.Name, msg); err != nil {
-				return 0, err
-			}
-		case importer.LineTypeDirectChannel:
-			if lines, err = DirectPost(conf, msg); err != nil {
-				return 0, err
-			}
-		}
-
-		for _, line := range lines {
-			switch {
-			case line.DirectPost != nil:
-				if line.DirectPost.Attachments != nil {
-					for _, attachment := range *line.DirectPost.Attachments {
-						attachments = append(attachments, *attachment.Path)
-					}
-				}
-				if line.DirectPost.Replies != nil {
-					for _, msg := range *line.DirectPost.Replies {
-						if msg.Attachments != nil {
-							for _, attachment := range *msg.Attachments {
-								attachments = append(attachments, *attachment.Path)
-							}
-						}
-					}
-				}
-			case line.Post != nil:
-				if line.Post.Attachments != nil {
-					for _, attachment := range *line.Post.Attachments {
-						attachments = append(attachments, *attachment.Path)
-					}
-				}
-				if line.Post.Replies != nil {
-					for _, msg := range *line.Post.Replies {
-						if msg.Attachments != nil {
-							for _, attachment := range *msg.Attachments {
-								attachments = append(attachments, *attachment.Path)
-							}
-						}
-					}
-				}
-			}
-
-			if err := encoder.Encode(line); err != nil {
-				return 0, err
-			}
-		}
 	}
 	_ = bar.Finish()
 
@@ -161,8 +160,6 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 			slog.Info("Zipping attachments (disable with --"+config.NoAttachmentsFlag+")", "count", len(attachments))
 			bar = progressbar.New(len(attachments))
 			for _, path := range attachments {
-				_ = bar.Add(1)
-
 				attachW, err := zw.Create(filepath.Join("data", path))
 				if err != nil {
 					return 0, err
@@ -171,6 +168,8 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 				if err := addAttachment(filepath.Join(conf.Input, path), attachW, !conf.NoFixWebP); err != nil {
 					return 0, err
 				}
+
+				_ = bar.Add(1)
 			}
 			_ = bar.Close()
 		}

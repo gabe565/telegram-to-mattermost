@@ -16,7 +16,6 @@ func (e *Export) PostLoad() {
 	var replyCount, pinCount int
 
 	for _, msg := range e.Messages {
-		_ = bar.Add(1)
 		switch {
 		case msg.Event != nil && msg.Event.Action != nil:
 			switch *msg.Event.Action {
@@ -42,6 +41,7 @@ func (e *Export) PostLoad() {
 				}
 			}
 		}
+		_ = bar.Add(1)
 	}
 	_ = bar.Close()
 	slog.Info("Finished post-load actions", slog.Group("counts", "replies", replyCount, "pins", pinCount))
