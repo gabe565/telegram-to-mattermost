@@ -31,6 +31,8 @@ func (e *Export) Users() []User {
 	return e.Users()
 }
 
+type InlineBotButtons []InlineBotButton
+
 type Message struct {
 	ID   int64  `json:"id"`
 	Type string `json:"type"`
@@ -40,10 +42,11 @@ type Message struct {
 
 	User
 
-	ForwardedFrom    *string `json:"forwarded_from"`
-	SavedFrom        *string `json:"saved_from"`
-	ReplyToMessageID *int64  `json:"reply_to_message_id"`
-	ViaBot           *string `json:"via_bot"`
+	ForwardedFrom    *string             `json:"forwarded_from"`
+	SavedFrom        *string             `json:"saved_from"`
+	ReplyToMessageID *int64              `json:"reply_to_message_id"`
+	ViaBot           *string             `json:"via_bot"`
+	InlineBotButtons []*InlineBotButtons `json:"inline_bot_buttons"`
 
 	*File
 	*Event
@@ -103,6 +106,11 @@ type File struct {
 
 	Width  *int `json:"width"`
 	Height *int `json:"height"`
+}
+
+type InlineBotButton struct {
+	Type *string `json:"type"`
+	Text *string `json:"text"`
 }
 
 type Event struct {
