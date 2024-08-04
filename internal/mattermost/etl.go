@@ -78,9 +78,6 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 
 		line, err := DirectPost(conf, msg)
 		if err != nil {
-			if errors.Is(err, ErrNoMessage) {
-				continue
-			}
 			return 0, err
 		}
 

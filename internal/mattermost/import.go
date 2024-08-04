@@ -2,7 +2,6 @@ package mattermost
 
 import (
 	"encoding/json"
-	"errors"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -16,8 +15,6 @@ import (
 	"github.com/mattermost/mattermost/server/v8/cmd/mmctl/commands/importer"
 	"k8s.io/utils/ptr"
 )
-
-var ErrNoMessage = errors.New("no message contents")
 
 func Version() *imports.LineImportData {
 	return &imports.LineImportData{
