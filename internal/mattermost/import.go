@@ -232,5 +232,5 @@ func transformAttachment(conf *config.Config, msg *telegram.Message) (*[]imports
 		}
 	}
 
-	return &[]imports.AttachmentImportData{{Path: &path}}, nil //dst.Close()
+	return &[]imports.AttachmentImportData{{Path: &path}}, nil
 }
