@@ -54,6 +54,10 @@ func (m *Message) FormatText(conf *config.Config) []string {
 				buf.WriteString(*e.Href)
 			}
 			buf.WriteByte(')')
+		case TypeStrikethrough:
+			buf.WriteString("~~")
+			buf.WriteString(e.Text)
+			buf.WriteString("~~")
 		case TypeBold:
 			buf.WriteString("**")
 			buf.WriteString(e.Text)
