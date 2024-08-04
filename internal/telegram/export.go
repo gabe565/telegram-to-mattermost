@@ -61,7 +61,7 @@ type Message struct {
 	TextEntities []*TextEntity `json:"text_entities"`
 
 	Reply    *Message `json:"-"`
-	IsPinned *bool
+	IsPinned *bool    `json:"-"`
 
 	// Unused fields
 	Text         json.RawMessage `json:"text"`

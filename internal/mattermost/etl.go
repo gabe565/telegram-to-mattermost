@@ -19,7 +19,7 @@ import (
 	"golang.org/x/image/webp"
 )
 
-func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint64, error) {
+func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint64, error) { //nolint:gocyclo
 	slog.Info("Converting to Mattermost import", "path", conf.Output)
 
 	f, err := os.Create(conf.Output)
@@ -181,7 +181,7 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 	return sizeWriter.Size(), f.Close()
 }
 
-var fixWebPWarned bool
+var fixWebPWarned bool //nolint:gochecknoglobals
 
 func addAttachment(path string, w io.Writer, fixWebP bool) error {
 	src, err := os.Open(path)

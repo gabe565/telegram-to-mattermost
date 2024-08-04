@@ -132,7 +132,7 @@ func Post(conf *config.Config, team, channel string, msg *telegram.Message) (*im
 		Attachments: attachments,
 	}
 
-	if msg.IsPinned != nil && *msg.IsPinned == true {
+	if msg.IsPinned != nil && *msg.IsPinned {
 		post.IsPinned = ptr.To(true)
 	}
 
@@ -167,7 +167,7 @@ func DirectPost(conf *config.Config, msg *telegram.Message) (*imports.LineImport
 		Attachments:    attachments,
 	}
 
-	if msg.IsPinned != nil && *msg.IsPinned == true {
+	if msg.IsPinned != nil && *msg.IsPinned {
 		post.IsPinned = ptr.To(true)
 	}
 
@@ -205,6 +205,7 @@ func timestamps(msg *telegram.Message) (*int64, *int64) {
 	return &createAt, editAt
 }
 
+//nolint:nilnil
 func transformReplies(conf *config.Config, msg *telegram.Message) (*[]imports.ReplyImportData, error) {
 	var replies []imports.ReplyImportData
 	for msg := msg.Reply; msg != nil; msg = msg.Reply {
@@ -221,6 +222,7 @@ func transformReplies(conf *config.Config, msg *telegram.Message) (*[]imports.Re
 	return &replies, nil
 }
 
+//nolint:nilnil
 func transformAttachment(conf *config.Config, msg *telegram.Message) (*[]imports.AttachmentImportData, error) {
 	if conf.NoAttachments {
 		return nil, nil

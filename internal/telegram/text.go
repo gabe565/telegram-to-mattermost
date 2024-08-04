@@ -42,7 +42,7 @@ func (m *Message) FormatText(conf *config.Config) string {
 		case TypeBold:
 			n += 4
 		case TypeMentionName:
-			n += 1
+			n++
 		case TypeEmail:
 			n += len(e.Text) + 11
 		case TypePhone:

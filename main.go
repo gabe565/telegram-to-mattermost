@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"io"
 	"os"
 
 	"github.com/charmbracelet/lipgloss"
@@ -11,9 +11,9 @@ import (
 func main() {
 	if err := cmd.New().Execute(); err != nil {
 		errStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("204"))
-		fmt.Println(lipgloss.JoinHorizontal(
+		_, _ = io.WriteString(os.Stderr, lipgloss.JoinHorizontal(
 			lipgloss.Top, errStyle.Render("Error: "), err.Error(),
-		))
+		)+"\n")
 		os.Exit(1)
 	}
 }
