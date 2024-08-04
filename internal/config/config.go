@@ -19,6 +19,8 @@ func New() *Config {
 	return &Config{
 		Output:        "data.zip",
 		MaxTextLength: 4000,
-		UserFile:      "users.toml",
+
+		CreateUsers: true,
+		UserFile:    "users.toml",
 	}
 }
