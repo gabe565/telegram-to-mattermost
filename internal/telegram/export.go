@@ -93,6 +93,7 @@ type PhoneCall struct {
 type TextEntity struct {
 	Type     TextEntityType `json:"type"`
 	Text     string         `json:"text"`
+	Href     *string        `json:"href"`
 	Language *string        `json:"language"`
 }
 

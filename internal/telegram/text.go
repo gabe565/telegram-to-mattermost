@@ -5,13 +5,14 @@ import (
 	"strings"
 )
 
-//go:generate enumer -type TextEntityType -trimprefix Type -transform lower -text
+//go:generate enumer -type TextEntityType -trimprefix Type -transform snake -text
 
 type TextEntityType uint8
 
 const (
 	TypePlain TextEntityType = iota
 	TypeLink
+	TypeTextLink
 	TypeBold
 	TypeMention
 	TypeHashtag
@@ -29,6 +30,11 @@ func (m *Message) FormatText(maxLen uint) string {
 		switch e.Type {
 		case TypeLink, TypeItalic, TypeCode:
 			n += 2
+		case TypeTextLink:
+			n += 2
+			if e.Href != nil {
+				n += len(*e.Href)
+			}
 		case TypeBold:
 			n += 4
 		case TypeEmail:
@@ -53,6 +59,14 @@ func (m *Message) FormatText(maxLen uint) string {
 			buf.WriteByte('<')
 			buf.WriteString(e.Text)
 			buf.WriteByte('>')
+		case TypeTextLink:
+			buf.WriteByte('[')
+			buf.WriteString(e.Text)
+			buf.WriteString("](")
+			if e.Href != nil {
+				buf.WriteString(*e.Href)
+			}
+			buf.WriteByte(')')
 		case TypeBold:
 			buf.WriteString("**")
 			buf.WriteString(e.Text)
