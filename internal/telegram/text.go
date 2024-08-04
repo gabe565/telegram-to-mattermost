@@ -8,25 +8,6 @@ import (
 	"github.com/gabe565/telegram-to-mattermost/internal/config"
 )
 
-//go:generate enumer -type TextEntityType -trimprefix Type -transform snake -text
-
-type TextEntityType uint8
-
-const (
-	TypePlain TextEntityType = iota
-	TypeLink
-	TypeTextLink
-	TypeBold
-	TypeHashtag
-	TypeItalic
-	TypeMention
-	TypeMentionName
-	TypeEmail
-	TypePhone
-	TypeCode
-	TypePre
-)
-
 func (m *Message) FormatText(conf *config.Config) []string {
 	var n int
 	for _, e := range m.TextEntities {

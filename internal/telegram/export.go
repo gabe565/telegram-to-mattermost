@@ -31,15 +31,6 @@ func (e *Export) Users() []User {
 	return e.Users()
 }
 
-//go:generate enumer -type ExportType -trimprefix Type -transform snake -text
-
-type ExportType uint8
-
-const (
-	TypePersonalChat ExportType = iota
-	TypePrivateGroup ExportType = iota
-)
-
 type Message struct {
 	ID   int64  `json:"id"`
 	Type string `json:"type"`
@@ -121,20 +112,6 @@ type Event struct {
 	DiscardReason *string  `json:"discard_reason"`
 	Members       []string `json:"members"`
 }
-
-//go:generate enumer -type Action -trimprefix Action -transform snake -text
-
-type Action uint8
-
-const (
-	ActionCreateGroup Action = iota
-	ActionEditGroupPhoto
-	ActionInviteMembers
-	ActionJoinGroupByLink
-	ActionPinMessage
-	ActionRemoveMembers
-	ActionPhoneCall
-)
 
 type TextEntity struct {
 	Type     TextEntityType `json:"type"`
