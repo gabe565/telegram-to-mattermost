@@ -46,6 +46,7 @@ type Message struct {
 
 	*File
 	*Event
+	*Game
 	*Location
 	*Contact
 
@@ -111,6 +112,14 @@ type Event struct {
 	MessageID     *int64   `json:"message_id"`
 	DiscardReason *string  `json:"discard_reason"`
 	Members       []string `json:"members"`
+}
+
+type Game struct {
+	GameTitle       *string `json:"game_title"`
+	GameDescription *string `json:"game_description"`
+	GameLink        *string `json:"game_link"`
+	GameMessageID   *int64  `json:"game_message_id"`
+	Score           *int64  `json:"score"`
 }
 
 type TextEntity struct {
