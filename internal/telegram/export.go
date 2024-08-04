@@ -41,6 +41,7 @@ type Message struct {
 	User
 
 	ForwardedFrom    *string `json:"forwarded_from"`
+	SavedFrom        *string `json:"saved_from"`
 	ReplyToMessageID *int64  `json:"reply_to_message_id"`
 	ViaBot           *string `json:"via_bot"`
 
