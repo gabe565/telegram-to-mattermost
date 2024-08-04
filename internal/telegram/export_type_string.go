@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-const _ExportTypeName = "personal_chatprivate_group"
+const _ExportTypeName = "personal_chatprivate_groupsaved_messages"
 
-var _ExportTypeIndex = [...]uint8{0, 13, 26}
+var _ExportTypeIndex = [...]uint8{0, 13, 26, 40}
 
-const _ExportTypeLowerName = "personal_chatprivate_group"
+const _ExportTypeLowerName = "personal_chatprivate_groupsaved_messages"
 
 func (i ExportType) String() string {
 	if i >= ExportType(len(_ExportTypeIndex)-1) {
@@ -26,20 +26,24 @@ func _ExportTypeNoOp() {
 	var x [1]struct{}
 	_ = x[TypePersonalChat-(0)]
 	_ = x[TypePrivateGroup-(1)]
+	_ = x[TypeSavedMessages-(2)]
 }
 
-var _ExportTypeValues = []ExportType{TypePersonalChat, TypePrivateGroup}
+var _ExportTypeValues = []ExportType{TypePersonalChat, TypePrivateGroup, TypeSavedMessages}
 
 var _ExportTypeNameToValueMap = map[string]ExportType{
 	_ExportTypeName[0:13]:       TypePersonalChat,
 	_ExportTypeLowerName[0:13]:  TypePersonalChat,
 	_ExportTypeName[13:26]:      TypePrivateGroup,
 	_ExportTypeLowerName[13:26]: TypePrivateGroup,
+	_ExportTypeName[26:40]:      TypeSavedMessages,
+	_ExportTypeLowerName[26:40]: TypeSavedMessages,
 }
 
 var _ExportTypeNames = []string{
 	_ExportTypeName[0:13],
 	_ExportTypeName[13:26],
+	_ExportTypeName[26:40],
 }
 
 // ExportTypeString retrieves an enum value from the enum constants string name.
