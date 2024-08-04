@@ -70,11 +70,6 @@ func LoadUserMap(conf *config.Config, export *telegram.Export) error {
 		}
 	}
 
-	channelMembers := make([]string, 0, len(mappedUsers))
-	for _, u := range mappedUsers {
-		channelMembers = append(channelMembers, u.Username)
-	}
-	conf.ChannelMembers = &channelMembers
 	conf.Users = mappedUsers
 	return nil
 }

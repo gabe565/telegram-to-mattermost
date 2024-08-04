@@ -11,8 +11,6 @@ type Config struct {
 
 	NoAttachments bool
 	NoFixWebP     bool
-
-	ChannelMembers *[]string
 }
 
 func New() *Config {

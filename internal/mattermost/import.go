@@ -101,7 +101,7 @@ func DirectChannel(conf *config.Config) *imports.LineImportData {
 	return &imports.LineImportData{
 		Type: importer.LineTypeDirectChannel,
 		DirectChannel: &imports.DirectChannelImportData{
-			Members: conf.ChannelMembers,
+			Members: ptr.To(conf.Users.Usernames()),
 		},
 	}
 }
@@ -167,7 +167,7 @@ func DirectPost(conf *config.Config, msg *telegram.Message) ([]imports.LineImpor
 	lines := make([]imports.LineImportData, 0, len(texts))
 	for _, text := range texts {
 		post := &imports.DirectPostImportData{
-			ChannelMembers: conf.ChannelMembers,
+			ChannelMembers: ptr.To(conf.Users.Usernames()),
 			User:           &user.Username,
 			Message:        &text,
 			CreateAt:       createAt,

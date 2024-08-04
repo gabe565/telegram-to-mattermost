@@ -2,6 +2,14 @@ package config
 
 type UserList map[string]*User
 
+func (u UserList) Usernames() []string {
+	result := make([]string, 0, len(u))
+	for _, user := range u {
+		result = append(result, user.Username)
+	}
+	return result
+}
+
 type User struct {
 	TelegramUsername string `comment:"Telegram"`
 
