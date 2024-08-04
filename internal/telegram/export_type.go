@@ -5,6 +5,7 @@ package telegram
 type ExportType uint8
 
 const (
-	TypePersonalChat ExportType = iota
-	TypePrivateGroup ExportType = iota
+	TypePersonalChat  ExportType = iota
+	TypePrivateGroup  ExportType = iota
+	TypeSavedMessages ExportType = iota
 )
