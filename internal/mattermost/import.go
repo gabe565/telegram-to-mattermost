@@ -3,6 +3,7 @@ package mattermost
 import (
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
@@ -18,12 +19,33 @@ import (
 )
 
 func Version() *imports.LineImportData {
+	var commit string
+	var modified bool
+	if info, ok := debug.ReadBuildInfo(); ok {
+		for _, setting := range info.Settings {
+			switch setting.Key {
+			case "vcs.revision":
+				commit = setting.Value
+			case "vcs.modified":
+				if setting.Value == "true" {
+					modified = true
+				}
+			}
+		}
+	}
+	if len(commit) > 8 {
+		commit = commit[:8]
+	}
+	if modified {
+		commit = "*" + commit
+	}
+
 	return &imports.LineImportData{
 		Type:    importer.LineTypeVersion,
 		Version: ptr.To(1),
 		Info: &imports.VersionInfoImportData{
 			Generator: "gabe565/telegram-to-mattermost",
-			Version:   "", // TODO: Pass version
+			Version:   commit,
 			Created:   time.Now().Format(time.RFC3339Nano),
 		},
 	}
