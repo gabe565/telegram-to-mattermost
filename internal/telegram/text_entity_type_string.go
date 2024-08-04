@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-const _TextEntityTypeName = "plainlinktext_linkboldhashtagitalicmentionmention_nameemailphonecodeprestrikethrough"
+const _TextEntityTypeName = "plainlinktext_linkboldhashtagitalicmentionmention_nameemailphonecodeprestrikethroughbank_cardcashtag"
 
-var _TextEntityTypeIndex = [...]uint8{0, 5, 9, 18, 22, 29, 35, 42, 54, 59, 64, 68, 71, 84}
+var _TextEntityTypeIndex = [...]uint8{0, 5, 9, 18, 22, 29, 35, 42, 54, 59, 64, 68, 71, 84, 93, 100}
 
-const _TextEntityTypeLowerName = "plainlinktext_linkboldhashtagitalicmentionmention_nameemailphonecodeprestrikethrough"
+const _TextEntityTypeLowerName = "plainlinktext_linkboldhashtagitalicmentionmention_nameemailphonecodeprestrikethroughbank_cardcashtag"
 
 func (i TextEntityType) String() string {
 	if i >= TextEntityType(len(_TextEntityTypeIndex)-1) {
@@ -37,37 +37,43 @@ func _TextEntityTypeNoOp() {
 	_ = x[TypeCode-(10)]
 	_ = x[TypePre-(11)]
 	_ = x[TypeStrikethrough-(12)]
+	_ = x[TypeBankCard-(13)]
+	_ = x[TypeCashtag-(14)]
 }
 
-var _TextEntityTypeValues = []TextEntityType{TypePlain, TypeLink, TypeTextLink, TypeBold, TypeHashtag, TypeItalic, TypeMention, TypeMentionName, TypeEmail, TypePhone, TypeCode, TypePre, TypeStrikethrough}
+var _TextEntityTypeValues = []TextEntityType{TypePlain, TypeLink, TypeTextLink, TypeBold, TypeHashtag, TypeItalic, TypeMention, TypeMentionName, TypeEmail, TypePhone, TypeCode, TypePre, TypeStrikethrough, TypeBankCard, TypeCashtag}
 
 var _TextEntityTypeNameToValueMap = map[string]TextEntityType{
-	_TextEntityTypeName[0:5]:        TypePlain,
-	_TextEntityTypeLowerName[0:5]:   TypePlain,
-	_TextEntityTypeName[5:9]:        TypeLink,
-	_TextEntityTypeLowerName[5:9]:   TypeLink,
-	_TextEntityTypeName[9:18]:       TypeTextLink,
-	_TextEntityTypeLowerName[9:18]:  TypeTextLink,
-	_TextEntityTypeName[18:22]:      TypeBold,
-	_TextEntityTypeLowerName[18:22]: TypeBold,
-	_TextEntityTypeName[22:29]:      TypeHashtag,
-	_TextEntityTypeLowerName[22:29]: TypeHashtag,
-	_TextEntityTypeName[29:35]:      TypeItalic,
-	_TextEntityTypeLowerName[29:35]: TypeItalic,
-	_TextEntityTypeName[35:42]:      TypeMention,
-	_TextEntityTypeLowerName[35:42]: TypeMention,
-	_TextEntityTypeName[42:54]:      TypeMentionName,
-	_TextEntityTypeLowerName[42:54]: TypeMentionName,
-	_TextEntityTypeName[54:59]:      TypeEmail,
-	_TextEntityTypeLowerName[54:59]: TypeEmail,
-	_TextEntityTypeName[59:64]:      TypePhone,
-	_TextEntityTypeLowerName[59:64]: TypePhone,
-	_TextEntityTypeName[64:68]:      TypeCode,
-	_TextEntityTypeLowerName[64:68]: TypeCode,
-	_TextEntityTypeName[68:71]:      TypePre,
-	_TextEntityTypeLowerName[68:71]: TypePre,
-	_TextEntityTypeName[71:84]:      TypeStrikethrough,
-	_TextEntityTypeLowerName[71:84]: TypeStrikethrough,
+	_TextEntityTypeName[0:5]:         TypePlain,
+	_TextEntityTypeLowerName[0:5]:    TypePlain,
+	_TextEntityTypeName[5:9]:         TypeLink,
+	_TextEntityTypeLowerName[5:9]:    TypeLink,
+	_TextEntityTypeName[9:18]:        TypeTextLink,
+	_TextEntityTypeLowerName[9:18]:   TypeTextLink,
+	_TextEntityTypeName[18:22]:       TypeBold,
+	_TextEntityTypeLowerName[18:22]:  TypeBold,
+	_TextEntityTypeName[22:29]:       TypeHashtag,
+	_TextEntityTypeLowerName[22:29]:  TypeHashtag,
+	_TextEntityTypeName[29:35]:       TypeItalic,
+	_TextEntityTypeLowerName[29:35]:  TypeItalic,
+	_TextEntityTypeName[35:42]:       TypeMention,
+	_TextEntityTypeLowerName[35:42]:  TypeMention,
+	_TextEntityTypeName[42:54]:       TypeMentionName,
+	_TextEntityTypeLowerName[42:54]:  TypeMentionName,
+	_TextEntityTypeName[54:59]:       TypeEmail,
+	_TextEntityTypeLowerName[54:59]:  TypeEmail,
+	_TextEntityTypeName[59:64]:       TypePhone,
+	_TextEntityTypeLowerName[59:64]:  TypePhone,
+	_TextEntityTypeName[64:68]:       TypeCode,
+	_TextEntityTypeLowerName[64:68]:  TypeCode,
+	_TextEntityTypeName[68:71]:       TypePre,
+	_TextEntityTypeLowerName[68:71]:  TypePre,
+	_TextEntityTypeName[71:84]:       TypeStrikethrough,
+	_TextEntityTypeLowerName[71:84]:  TypeStrikethrough,
+	_TextEntityTypeName[84:93]:       TypeBankCard,
+	_TextEntityTypeLowerName[84:93]:  TypeBankCard,
+	_TextEntityTypeName[93:100]:      TypeCashtag,
+	_TextEntityTypeLowerName[93:100]: TypeCashtag,
 }
 
 var _TextEntityTypeNames = []string{
@@ -84,6 +90,8 @@ var _TextEntityTypeNames = []string{
 	_TextEntityTypeName[64:68],
 	_TextEntityTypeName[68:71],
 	_TextEntityTypeName[71:84],
+	_TextEntityTypeName[84:93],
+	_TextEntityTypeName[93:100],
 }
 
 // TextEntityTypeString retrieves an enum value from the enum constants string name.

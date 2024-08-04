@@ -40,7 +40,7 @@ func (m *Message) FormatText(conf *config.Config) []string {
 	buf.Grow(n)
 	for _, e := range m.TextEntities {
 		switch e.Type {
-		case TypePlain, TypeMention, TypeHashtag:
+		case TypePlain, TypeMention, TypeHashtag, TypeBankCard, TypeCashtag:
 			buf.WriteString(e.Text)
 		case TypeLink:
 			buf.WriteByte('<')
