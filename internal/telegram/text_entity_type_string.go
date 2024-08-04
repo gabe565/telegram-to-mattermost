@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-const _TextEntityTypeName = "plainlinktext_linkboldhashtagitalicmentionmention_nameemailphonecodepre"
+const _TextEntityTypeName = "plainlinktext_linkboldhashtagitalicmentionmention_nameemailphonecodeprestrikethrough"
 
-var _TextEntityTypeIndex = [...]uint8{0, 5, 9, 18, 22, 29, 35, 42, 54, 59, 64, 68, 71}
+var _TextEntityTypeIndex = [...]uint8{0, 5, 9, 18, 22, 29, 35, 42, 54, 59, 64, 68, 71, 84}
 
-const _TextEntityTypeLowerName = "plainlinktext_linkboldhashtagitalicmentionmention_nameemailphonecodepre"
+const _TextEntityTypeLowerName = "plainlinktext_linkboldhashtagitalicmentionmention_nameemailphonecodeprestrikethrough"
 
 func (i TextEntityType) String() string {
 	if i >= TextEntityType(len(_TextEntityTypeIndex)-1) {
@@ -36,9 +36,10 @@ func _TextEntityTypeNoOp() {
 	_ = x[TypePhone-(9)]
 	_ = x[TypeCode-(10)]
 	_ = x[TypePre-(11)]
+	_ = x[TypeStrikethrough-(12)]
 }
 
-var _TextEntityTypeValues = []TextEntityType{TypePlain, TypeLink, TypeTextLink, TypeBold, TypeHashtag, TypeItalic, TypeMention, TypeMentionName, TypeEmail, TypePhone, TypeCode, TypePre}
+var _TextEntityTypeValues = []TextEntityType{TypePlain, TypeLink, TypeTextLink, TypeBold, TypeHashtag, TypeItalic, TypeMention, TypeMentionName, TypeEmail, TypePhone, TypeCode, TypePre, TypeStrikethrough}
 
 var _TextEntityTypeNameToValueMap = map[string]TextEntityType{
 	_TextEntityTypeName[0:5]:        TypePlain,
@@ -65,6 +66,8 @@ var _TextEntityTypeNameToValueMap = map[string]TextEntityType{
 	_TextEntityTypeLowerName[64:68]: TypeCode,
 	_TextEntityTypeName[68:71]:      TypePre,
 	_TextEntityTypeLowerName[68:71]: TypePre,
+	_TextEntityTypeName[71:84]:      TypeStrikethrough,
+	_TextEntityTypeLowerName[71:84]: TypeStrikethrough,
 }
 
 var _TextEntityTypeNames = []string{
@@ -80,6 +83,7 @@ var _TextEntityTypeNames = []string{
 	_TextEntityTypeName[59:64],
 	_TextEntityTypeName[64:68],
 	_TextEntityTypeName[68:71],
+	_TextEntityTypeName[71:84],
 }
 
 // TextEntityTypeString retrieves an enum value from the enum constants string name.
