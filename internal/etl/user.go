@@ -72,6 +72,11 @@ func LoadUserMap(conf *config.Config, export *telegram.Export) error {
 		return fmt.Errorf("%w: Please edit %q with mapping details, then rerun this tool", ErrNotAllMapped, conf.UserFile)
 	}
 
+	channelMembers := make([]string, 0, len(mappedUsers))
+	for _, u := range mappedUsers {
+		channelMembers = append(channelMembers, u.Username)
+	}
+	conf.ChannelMembers = &channelMembers
 	conf.Users = mappedUsers
 	return nil
 }
