@@ -18,7 +18,6 @@ A command-line tool that converts Telegram exports to Mattermost data imports.
    ```shell
    ./telegram-to-mattermost ~/Downloads/Telegram\ Desktop/ChatExport_2024-08-01
    ```
-5. The tool will fail because you need to configure your user mappings. Edit `users.toml` and fill in all usernames and emails.
-6. Run the tool with the same parameters.
-7. The tool should finish successfully, and a new file `data.zip` will be available to import into Mattermost.
-8. Follow Mattermost's [bulk loading data](https://docs.mattermost.com/onboard/bulk-loading-data.html#bulk-load-data) guide to import this file.
+5. Fill in the prompts to set up user mappings.
+6The tool should finish successfully, and a new file `data.zip` will be available to import into Mattermost.
+7Follow Mattermost's [bulk loading data](https://docs.mattermost.com/onboard/bulk-loading-data.html#bulk-load-data) guide to import this file.

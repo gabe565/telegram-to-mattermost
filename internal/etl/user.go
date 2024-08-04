@@ -1,75 +1,73 @@
 package etl
 
 import (
-	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 
+	"github.com/charmbracelet/huh"
+	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/lipgloss/table"
 	"github.com/gabe565/telegram-to-mattermost/internal/config"
 	"github.com/gabe565/telegram-to-mattermost/internal/telegram"
 	"github.com/mcuadros/go-defaults"
 	"github.com/pelletier/go-toml/v2"
 )
 
-var ErrNotAllMapped = errors.New("not all users are mapped")
-
 func LoadUserMap(conf *config.Config, export *telegram.Export) error {
-	exportUsers := export.Users()
-	allMappedUsers := make(config.UserList, len(exportUsers))
+	slog.Info("Loading user mapping", "path", conf.UserFile)
 
-	if _, err := os.Stat(conf.UserFile); err == nil {
-		f, err := os.Open(conf.UserFile)
-		if err != nil {
-			return err
-		}
-		defer func(f *os.File) {
-			_ = f.Close()
-		}(f)
-
-		if err := toml.NewDecoder(f).Decode(&allMappedUsers); err != nil {
-			return err
-		}
-
-		_ = f.Close()
+	allMappedUsers, err := loadMapping(conf.UserFile)
+	if err != nil && !os.IsNotExist(err) {
+		return err
 	}
 
+	exportUsers := export.Users()
 	mappedUsers := make(config.UserList, len(exportUsers))
-	var missing bool
-	for _, tgUser := range exportUsers {
+	for i, tgUser := range exportUsers {
 		user, ok := allMappedUsers[tgUser.FromID]
 		if !ok {
-			missing = true
-			user = &config.User{
-				TelegramUsername: tgUser.From,
-			}
+			user = &config.User{TelegramUsername: tgUser.From}
 			defaults.SetDefaults(user)
 			allMappedUsers[tgUser.FromID] = user
-		} else if !missing {
-			missing = user.Username == "" || (conf.CreateUsers && user.Email == "")
-			mappedUsers[tgUser.FromID] = user
 		}
-	}
+		mappedUsers[tgUser.FromID] = user
 
-	if missing {
-		f, err := os.Create(conf.UserFile)
-		if err != nil {
-			return err
+		if user.Username == "" || (conf.CreateUsers && user.Email == "") {
+			tbl := table.New().
+				Row("ID:", tgUser.FromID).
+				Row("Name:", user.TelegramUsername).
+				Border(lipgloss.HiddenBorder()).
+				StyleFunc(func(_, col int) lipgloss.Style {
+					if col == 0 {
+						return lipgloss.NewStyle().AlignHorizontal(lipgloss.Right)
+					}
+					return lipgloss.NewStyle()
+				})
+
+			if err := huh.NewForm(
+				huh.NewGroup(
+					huh.NewNote().
+						Title(fmt.Sprintf("Map Telegram user (%d/%d)\n%s", i+1, len(exportUsers), tbl.String())),
+
+					huh.NewInput().
+						Title("Username").
+						Validate(huh.ValidateNotEmpty()).
+						Value(&user.Username),
+
+					huh.NewInput().
+						Title("Email").
+						Validate(huh.ValidateNotEmpty()).
+						Value(&user.Email),
+				),
+			).Run(); err != nil {
+				return err
+			}
+
+			if err := saveMapping(conf.UserFile, allMappedUsers); err != nil {
+				return err
+			}
 		}
-		defer func(f *os.File) {
-			_ = f.Close()
-		}(f)
-
-		encoder := toml.NewEncoder(f)
-		encoder.SetIndentTables(true)
-		if err := encoder.Encode(allMappedUsers); err != nil {
-			return err
-		}
-
-		if err := f.Close(); err != nil {
-			return err
-		}
-
-		return fmt.Errorf("%w: Please edit %q with mapping details, then rerun this tool", ErrNotAllMapped, conf.UserFile)
 	}
 
 	channelMembers := make([]string, 0, len(mappedUsers))
@@ -79,4 +77,40 @@ func LoadUserMap(conf *config.Config, export *telegram.Export) error {
 	conf.ChannelMembers = &channelMembers
 	conf.Users = mappedUsers
 	return nil
+}
+
+func loadMapping(path string) (config.UserList, error) {
+	mapping := make(config.UserList)
+
+	f, err := os.Open(path)
+	if err != nil {
+		return mapping, err
+	}
+	defer func(f *os.File) {
+		_ = f.Close()
+	}(f)
+
+	if err := toml.NewDecoder(f).Decode(&mapping); err != nil {
+		return mapping, err
+	}
+
+	return mapping, nil
+}
+
+func saveMapping(path string, mapping config.UserList) error {
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer func(f *os.File) {
+		_ = f.Close()
+	}(f)
+
+	encoder := toml.NewEncoder(f)
+	encoder.SetIndentTables(true)
+	if err := encoder.Encode(mapping); err != nil {
+		return err
+	}
+
+	return f.Close()
 }
