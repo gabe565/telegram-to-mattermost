@@ -18,4 +18,6 @@ const (
 	TypeCode
 	TypePre
 	TypeStrikethrough
+	TypeBankCard
+	TypeCashtag
 )
