@@ -54,7 +54,7 @@ func Version() *imports.LineImportData {
 func User(user *config.User, team *imports.TeamImportData) *imports.LineImportData {
 	userImport := &imports.UserImportData{
 		Username:           &user.Username,
-		Email:              &user.Username,
+		Email:              &user.Email,
 		UseMarkdownPreview: ptr.To(strconv.FormatBool(user.UseMarkdownPreview)),
 		UseFormatting:      ptr.To(strconv.FormatBool(user.UseFormatting)),
 		ShowUnreadSection:  ptr.To(strconv.FormatBool(user.ShowUnreadSection)),
