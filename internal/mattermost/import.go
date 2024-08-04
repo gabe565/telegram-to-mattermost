@@ -89,6 +89,10 @@ func DirectPost(conf *config.Config, msg *telegram.Message) (*imports.LineImport
 		*post.Replies = append(*post.Replies, *replyImport)
 	}
 
+	if msg.IsPinned != nil && *msg.IsPinned == true {
+		post.IsPinned = ptr.To(true)
+	}
+
 	return &imports.LineImportData{
 		Type:       importer.LineTypeDirectPost,
 		DirectPost: post,

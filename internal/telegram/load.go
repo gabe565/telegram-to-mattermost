@@ -24,6 +24,6 @@ func FromFile(path string) (*Export, error) {
 	}
 	slog.Info("Loaded Telegram export", "name", export.Name, "type", export.Type, "messages", len(export.Messages))
 
-	export.GroupReplies()
+	export.PostLoad()
 	return export, nil
 }

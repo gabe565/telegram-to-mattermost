@@ -50,13 +50,14 @@ type Message struct {
 	ViaBot           *string `json:"via_bot"`
 
 	*File
-	*PhoneCall
+	*Event
 	*Location
 	*Contact
 
 	TextEntities []*TextEntity `json:"text_entities"`
 
-	Reply *Message `json:"-"`
+	Reply    *Message `json:"-"`
+	IsPinned *bool
 
 	// Unused fields
 	Text         json.RawMessage `json:"text"`
@@ -83,17 +84,35 @@ type File struct {
 	Height *int `json:"height"`
 }
 
-type PhoneCall struct {
-	Actor         *string `json:"actor"`
-	ActorID       *string `json:"actor_id"`
-	Action        *string `json:"action"`
-	DiscardReason *string `json:"discard_reason"`
+type Event struct {
+	Actor         *string  `json:"actor"`
+	ActorID       *string  `json:"actor_id"`
+	Action        *Action  `json:"action"`
+	Inviter       *string  `json:"inviter"`
+	MessageID     *int64   `json:"message_id"`
+	DiscardReason *string  `json:"discard_reason"`
+	Members       []string `json:"members"`
 }
+
+//go:generate enumer -type Action -trimprefix Action -transform snake -text
+
+type Action uint8
+
+const (
+	ActionCreateGroup Action = iota
+	ActionEditGroupPhoto
+	ActionInviteMembers
+	ActionJoinGroupByLink
+	ActionPinMessage
+	ActionRemoveMembers
+	ActionPhoneCall
+)
 
 type TextEntity struct {
 	Type     TextEntityType `json:"type"`
 	Text     string         `json:"text"`
 	Href     *string        `json:"href"`
+	UserID   *int64         `json:"user_id"`
 	Language *string        `json:"language"`
 }
 
