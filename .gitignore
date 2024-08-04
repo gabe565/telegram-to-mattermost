@@ -1,4 +1,5 @@
 *.jsonl
+*.toml
 *.zip
 .DS_Store
 .idea/

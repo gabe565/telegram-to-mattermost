@@ -7,6 +7,8 @@ require (
 	github.com/charmbracelet/log v0.4.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/mattermost/mattermost/server/v8 v8.0.0-20240730231005-b1fd445fcc19
+	github.com/mcuadros/go-defaults v1.2.0
+	github.com/pelletier/go-toml/v2 v2.2.2
 	github.com/schollz/progressbar/v3 v3.14.5
 	github.com/spf13/cobra v1.8.1
 	golang.org/x/image v0.18.0

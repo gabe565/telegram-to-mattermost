@@ -9,19 +9,19 @@ type Export struct {
 	Name     string     `json:"name"`
 	Type     ExportType `json:"type"`
 	ID       int64      `json:"id"`
-	users    []string
+	users    []User
 	Messages []*Message `json:"messages"`
 }
 
-func (e *Export) Users() []string {
+func (e *Export) Users() []User {
 	if e.users != nil {
 		return slices.Clone(e.users)
 	}
 
-	users := make([]string, 0, 2)
+	users := make([]User, 0, 2)
 	for _, msg := range e.Messages {
-		if msg.From != "" && !slices.Contains(users, msg.From) {
-			users = append(users, msg.From)
+		if !slices.Contains(users, msg.User) {
+			users = append(users, msg.User)
 		}
 	}
 	e.users = slices.Clip(users)
@@ -43,8 +43,8 @@ type Message struct {
 	Date   json.Number  `json:"date_unixtime"`
 	Edited *json.Number `json:"edited_unixtime"`
 
-	From             string  `json:"from"`
-	FromID           string  `json:"from_id"`
+	User
+
 	ForwardedFrom    *string `json:"forwarded_from"`
 	ReplyToMessageID *int64  `json:"reply_to_message_id"`
 	ViaBot           *string `json:"via_bot"`
@@ -63,6 +63,11 @@ type Message struct {
 	Text         json.RawMessage `json:"text"`
 	DateString   json.RawMessage `json:"date"`
 	EditedString json.RawMessage `json:"edited"`
+}
+
+type User struct {
+	FromID string `json:"from_id"`
+	From   string `json:"from"`
 }
 
 type File struct {

@@ -20,12 +20,6 @@ import (
 func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint64, error) {
 	slog.Info("Converting to Mattermost import", "path", conf.Output)
 
-	mmUsers, err := MapAllUsers(conf, export)
-	conf.ChannelMembers = &mmUsers
-	if err := errors.Join(err, CheckEmails(conf, export)); err != nil {
-		return 0, err
-	}
-
 	f, err := os.Create(conf.Output)
 	if err != nil {
 		return 0, err
@@ -60,10 +54,10 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 	}
 
 	if conf.CreateUsers {
-		users := export.Users()
+		users := conf.Users
 		slog.Info("Generating users", "count", len(users))
-		for _, tgUsername := range users {
-			if err := encoder.Encode(User(conf, tgUsername)); err != nil {
+		for _, user := range users {
+			if err := encoder.Encode(User(user)); err != nil {
 				return 0, err
 			}
 		}

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -30,17 +31,17 @@ func Version() *imports.LineImportData {
 	}
 }
 
-func User(conf *config.Config, tgUsername string) *imports.LineImportData {
-	user := &imports.UserImportData{
-		Username:           ptr.To(conf.Usernames[tgUsername]),
-		Email:              ptr.To(conf.Emails[tgUsername]),
-		UseMarkdownPreview: ptr.To("true"),
-		UseFormatting:      ptr.To("true"),
-		ShowUnreadSection:  ptr.To("false"),
+func User(user *config.User) *imports.LineImportData {
+	userImport := &imports.UserImportData{
+		Username:           &user.Username,
+		Email:              &user.Username,
+		UseMarkdownPreview: ptr.To(strconv.FormatBool(user.UseMarkdownPreview)),
+		UseFormatting:      ptr.To(strconv.FormatBool(user.UseFormatting)),
+		ShowUnreadSection:  ptr.To(strconv.FormatBool(user.ShowUnreadSection)),
 		EmailInterval:      ptr.To("immediately"),
 	}
 
-	return &imports.LineImportData{Type: importer.LineTypeUser, User: user}
+	return &imports.LineImportData{Type: importer.LineTypeUser, User: userImport}
 }
 
 func DirectChannel(conf *config.Config) *imports.LineImportData {
@@ -63,9 +64,10 @@ func DirectPost(conf *config.Config, msg *telegram.Message) (*imports.LineImport
 		return nil, err
 	}
 
+	user := conf.Users[msg.FromID]
 	post := &imports.DirectPostImportData{
 		ChannelMembers: conf.ChannelMembers,
-		User:           ptr.To(conf.Usernames[msg.From]),
+		User:           &user.Username,
 		Message:        ptr.To(msg.FormatText(conf.MaxTextLength)),
 		CreateAt:       createAt,
 		EditAt:         editAt,
@@ -110,8 +112,9 @@ func Reply(conf *config.Config, msg *telegram.Message) (*imports.ReplyImportData
 		return nil, err
 	}
 
+	user := conf.Users[msg.FromID]
 	post := &imports.ReplyImportData{
-		User:     ptr.To(conf.Usernames[msg.From]),
+		User:     &user.Username,
 		Message:  ptr.To(msg.FormatText(conf.MaxTextLength)),
 		CreateAt: createAt,
 		EditAt:   editAt,

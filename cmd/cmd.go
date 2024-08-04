@@ -7,6 +7,7 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/gabe565/telegram-to-mattermost/internal/config"
+	"github.com/gabe565/telegram-to-mattermost/internal/etl"
 	"github.com/gabe565/telegram-to-mattermost/internal/mattermost"
 	"github.com/gabe565/telegram-to-mattermost/internal/telegram"
 	"github.com/spf13/cobra"
@@ -36,6 +37,11 @@ func run(cmd *cobra.Command, args []string) error {
 
 	export, err := telegram.FromFile(filepath.Join(conf.Input, "result.json"))
 	if err != nil {
+		return err
+	}
+
+	if err := etl.LoadUserMap(conf, export); err != nil {
+		cmd.SilenceUsage = true
 		return err
 	}
 

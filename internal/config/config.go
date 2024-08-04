@@ -6,8 +6,8 @@ type Config struct {
 	MaxTextLength uint
 
 	CreateUsers bool
-	Usernames   map[string]string
-	Emails      map[string]string
+	UserFile    string
+	Users       UserList
 
 	NoAttachments bool
 	NoFixWebP     bool
@@ -19,5 +19,6 @@ func New() *Config {
 	return &Config{
 		Output:        "data.zip",
 		MaxTextLength: 4000,
+		UserFile:      "users.toml",
 	}
 }
