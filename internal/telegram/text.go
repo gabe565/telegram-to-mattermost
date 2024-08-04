@@ -27,7 +27,7 @@ const (
 	TypePre
 )
 
-func (m *Message) FormatText(conf *config.Config) string {
+func (m *Message) FormatText(conf *config.Config) []string {
 	var n int
 	for _, e := range m.TextEntities {
 		n += len(e.Text)
@@ -120,8 +120,15 @@ func (m *Message) FormatText(conf *config.Config) string {
 		}
 	}
 	if buf.Len() > int(conf.MaxTextLength) {
-		slog.Warn("Truncating message", "length", buf.Len(), "id", m.ID, "from", m.From, "timestamp", m.Date().String())
-		return buf.String()[:conf.MaxTextLength]
+		slog.Warn("Splitting message", "length", buf.Len(), "id", m.ID, "from", m.From, "timestamp", m.Date().String())
+		split := make([]string, 0, buf.Len()/int(conf.MaxTextLength)+1)
+		split = append(split, buf.String())
+		for len(split[len(split)-1]) > int(conf.MaxTextLength) {
+			curr, next := split[len(split)-1][:4000], split[len(split)-1][4000:]
+			split[len(split)-1] = curr
+			split = append(split, next)
+		}
+		return split
 	}
-	return buf.String()
+	return []string{buf.String()}
 }

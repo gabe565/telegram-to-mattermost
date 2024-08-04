@@ -106,7 +106,7 @@ func DirectChannel(conf *config.Config) *imports.LineImportData {
 	}
 }
 
-func Post(conf *config.Config, team, channel string, msg *telegram.Message) (*imports.LineImportData, error) {
+func Post(conf *config.Config, team, channel string, msg *telegram.Message) ([]imports.LineImportData, error) {
 	createAt, editAt := timestamps(msg)
 
 	attachments, err := transformAttachment(conf, msg)
@@ -121,28 +121,34 @@ func Post(conf *config.Config, team, channel string, msg *telegram.Message) (*im
 
 	user := conf.Users[msg.FromID]
 
-	post := &imports.PostImportData{
-		Team:        &team,
-		Channel:     &channel,
-		User:        &user.Username,
-		Message:     ptr.To(msg.FormatText(conf)),
-		CreateAt:    createAt,
-		EditAt:      editAt,
-		Replies:     replies,
-		Attachments: attachments,
+	texts := msg.FormatText(conf)
+	lines := make([]imports.LineImportData, 0, len(texts))
+	for _, text := range texts {
+		post := &imports.PostImportData{
+			Team:        &team,
+			Channel:     &channel,
+			User:        &user.Username,
+			Message:     &text,
+			CreateAt:    createAt,
+			EditAt:      editAt,
+			Replies:     replies,
+			Attachments: attachments,
+		}
+
+		if msg.IsPinned != nil && *msg.IsPinned {
+			post.IsPinned = ptr.To(true)
+		}
+
+		lines = append(lines, imports.LineImportData{
+			Type: importer.LineTypePost,
+			Post: post,
+		})
 	}
 
-	if msg.IsPinned != nil && *msg.IsPinned {
-		post.IsPinned = ptr.To(true)
-	}
-
-	return &imports.LineImportData{
-		Type: importer.LineTypePost,
-		Post: post,
-	}, nil
+	return lines, nil
 }
 
-func DirectPost(conf *config.Config, msg *telegram.Message) (*imports.LineImportData, error) {
+func DirectPost(conf *config.Config, msg *telegram.Message) ([]imports.LineImportData, error) {
 	createAt, editAt := timestamps(msg)
 
 	attachments, err := transformAttachment(conf, msg)
@@ -157,27 +163,33 @@ func DirectPost(conf *config.Config, msg *telegram.Message) (*imports.LineImport
 
 	user := conf.Users[msg.FromID]
 
-	post := &imports.DirectPostImportData{
-		ChannelMembers: conf.ChannelMembers,
-		User:           &user.Username,
-		Message:        ptr.To(msg.FormatText(conf)),
-		CreateAt:       createAt,
-		EditAt:         editAt,
-		Replies:        replies,
-		Attachments:    attachments,
+	texts := msg.FormatText(conf)
+	lines := make([]imports.LineImportData, 0, len(texts))
+	for _, text := range texts {
+		post := &imports.DirectPostImportData{
+			ChannelMembers: conf.ChannelMembers,
+			User:           &user.Username,
+			Message:        &text,
+			CreateAt:       createAt,
+			EditAt:         editAt,
+			Replies:        replies,
+			Attachments:    attachments,
+		}
+
+		if msg.IsPinned != nil && *msg.IsPinned {
+			post.IsPinned = ptr.To(true)
+		}
+
+		lines = append(lines, imports.LineImportData{
+			Type:       importer.LineTypeDirectPost,
+			DirectPost: post,
+		})
 	}
 
-	if msg.IsPinned != nil && *msg.IsPinned {
-		post.IsPinned = ptr.To(true)
-	}
-
-	return &imports.LineImportData{
-		Type:       importer.LineTypeDirectPost,
-		DirectPost: post,
-	}, nil
+	return lines, nil
 }
 
-func Reply(conf *config.Config, msg *telegram.Message) (*imports.ReplyImportData, error) {
+func Reply(conf *config.Config, msg *telegram.Message) ([]imports.ReplyImportData, error) {
 	createAt, editAt := timestamps(msg)
 
 	attachments, err := transformAttachment(conf, msg)
@@ -187,13 +199,18 @@ func Reply(conf *config.Config, msg *telegram.Message) (*imports.ReplyImportData
 
 	user := conf.Users[msg.FromID]
 
-	return &imports.ReplyImportData{
-		User:        &user.Username,
-		Message:     ptr.To(msg.FormatText(conf)),
-		CreateAt:    createAt,
-		EditAt:      editAt,
-		Attachments: attachments,
-	}, nil
+	texts := msg.FormatText(conf)
+	lines := make([]imports.ReplyImportData, 0, len(texts))
+	for _, text := range texts {
+		lines = append(lines, imports.ReplyImportData{
+			User:        &user.Username,
+			Message:     &text,
+			CreateAt:    createAt,
+			EditAt:      editAt,
+			Attachments: attachments,
+		})
+	}
+	return lines, nil
 }
 
 func timestamps(msg *telegram.Message) (*int64, *int64) {
@@ -209,12 +226,12 @@ func timestamps(msg *telegram.Message) (*int64, *int64) {
 func transformReplies(conf *config.Config, msg *telegram.Message) (*[]imports.ReplyImportData, error) {
 	var replies []imports.ReplyImportData
 	for msg := msg.Reply; msg != nil; msg = msg.Reply {
-		replyImport, err := Reply(conf, msg)
+		replyImports, err := Reply(conf, msg)
 		if err != nil {
 			return nil, err
 		}
 
-		replies = append(replies, *replyImport)
+		replies = append(replies, replyImports...)
 	}
 	if len(replies) == 0 {
 		return nil, nil

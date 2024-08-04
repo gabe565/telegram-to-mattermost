@@ -103,53 +103,55 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 			continue
 		}
 
-		var line *imports.LineImportData
+		var lines []imports.LineImportData
 		switch channelType {
 		case importer.LineTypeChannel:
-			if line, err = Post(conf, *team.Name, *channel.Name, msg); err != nil {
+			if lines, err = Post(conf, *team.Name, *channel.Name, msg); err != nil {
 				return 0, err
 			}
 		case importer.LineTypeDirectChannel:
-			if line, err = DirectPost(conf, msg); err != nil {
+			if lines, err = DirectPost(conf, msg); err != nil {
 				return 0, err
 			}
 		}
 
-		switch {
-		case line.DirectPost != nil:
-			if line.DirectPost.Attachments != nil {
-				for _, attachment := range *line.DirectPost.Attachments {
-					attachments = append(attachments, *attachment.Path)
+		for _, line := range lines {
+			switch {
+			case line.DirectPost != nil:
+				if line.DirectPost.Attachments != nil {
+					for _, attachment := range *line.DirectPost.Attachments {
+						attachments = append(attachments, *attachment.Path)
+					}
 				}
-			}
-			if line.DirectPost.Replies != nil {
-				for _, msg := range *line.DirectPost.Replies {
-					if msg.Attachments != nil {
-						for _, attachment := range *msg.Attachments {
-							attachments = append(attachments, *attachment.Path)
+				if line.DirectPost.Replies != nil {
+					for _, msg := range *line.DirectPost.Replies {
+						if msg.Attachments != nil {
+							for _, attachment := range *msg.Attachments {
+								attachments = append(attachments, *attachment.Path)
+							}
+						}
+					}
+				}
+			case line.Post != nil:
+				if line.Post.Attachments != nil {
+					for _, attachment := range *line.Post.Attachments {
+						attachments = append(attachments, *attachment.Path)
+					}
+				}
+				if line.Post.Replies != nil {
+					for _, msg := range *line.Post.Replies {
+						if msg.Attachments != nil {
+							for _, attachment := range *msg.Attachments {
+								attachments = append(attachments, *attachment.Path)
+							}
 						}
 					}
 				}
 			}
-		case line.Post != nil:
-			if line.Post.Attachments != nil {
-				for _, attachment := range *line.Post.Attachments {
-					attachments = append(attachments, *attachment.Path)
-				}
-			}
-			if line.Post.Replies != nil {
-				for _, msg := range *line.Post.Replies {
-					if msg.Attachments != nil {
-						for _, attachment := range *msg.Attachments {
-							attachments = append(attachments, *attachment.Path)
-						}
-					}
-				}
-			}
-		}
 
-		if err := encoder.Encode(line); err != nil {
-			return 0, err
+			if err := encoder.Encode(line); err != nil {
+				return 0, err
+			}
 		}
 	}
 	_ = bar.Finish()
