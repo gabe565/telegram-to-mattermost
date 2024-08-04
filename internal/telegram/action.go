@@ -12,4 +12,5 @@ const (
 	ActionPinMessage
 	ActionRemoveMembers
 	ActionPhoneCall
+	ActionScoreInGame
 )

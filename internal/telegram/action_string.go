@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-const _ActionName = "create_groupedit_group_photoinvite_membersjoin_group_by_linkpin_messageremove_membersphone_call"
+const _ActionName = "create_groupedit_group_photoinvite_membersjoin_group_by_linkpin_messageremove_membersphone_callscore_in_game"
 
-var _ActionIndex = [...]uint8{0, 12, 28, 42, 60, 71, 85, 95}
+var _ActionIndex = [...]uint8{0, 12, 28, 42, 60, 71, 85, 95, 108}
 
-const _ActionLowerName = "create_groupedit_group_photoinvite_membersjoin_group_by_linkpin_messageremove_membersphone_call"
+const _ActionLowerName = "create_groupedit_group_photoinvite_membersjoin_group_by_linkpin_messageremove_membersphone_callscore_in_game"
 
 func (i Action) String() string {
 	if i >= Action(len(_ActionIndex)-1) {
@@ -31,25 +31,28 @@ func _ActionNoOp() {
 	_ = x[ActionPinMessage-(4)]
 	_ = x[ActionRemoveMembers-(5)]
 	_ = x[ActionPhoneCall-(6)]
+	_ = x[ActionScoreInGame-(7)]
 }
 
-var _ActionValues = []Action{ActionCreateGroup, ActionEditGroupPhoto, ActionInviteMembers, ActionJoinGroupByLink, ActionPinMessage, ActionRemoveMembers, ActionPhoneCall}
+var _ActionValues = []Action{ActionCreateGroup, ActionEditGroupPhoto, ActionInviteMembers, ActionJoinGroupByLink, ActionPinMessage, ActionRemoveMembers, ActionPhoneCall, ActionScoreInGame}
 
 var _ActionNameToValueMap = map[string]Action{
-	_ActionName[0:12]:       ActionCreateGroup,
-	_ActionLowerName[0:12]:  ActionCreateGroup,
-	_ActionName[12:28]:      ActionEditGroupPhoto,
-	_ActionLowerName[12:28]: ActionEditGroupPhoto,
-	_ActionName[28:42]:      ActionInviteMembers,
-	_ActionLowerName[28:42]: ActionInviteMembers,
-	_ActionName[42:60]:      ActionJoinGroupByLink,
-	_ActionLowerName[42:60]: ActionJoinGroupByLink,
-	_ActionName[60:71]:      ActionPinMessage,
-	_ActionLowerName[60:71]: ActionPinMessage,
-	_ActionName[71:85]:      ActionRemoveMembers,
-	_ActionLowerName[71:85]: ActionRemoveMembers,
-	_ActionName[85:95]:      ActionPhoneCall,
-	_ActionLowerName[85:95]: ActionPhoneCall,
+	_ActionName[0:12]:        ActionCreateGroup,
+	_ActionLowerName[0:12]:   ActionCreateGroup,
+	_ActionName[12:28]:       ActionEditGroupPhoto,
+	_ActionLowerName[12:28]:  ActionEditGroupPhoto,
+	_ActionName[28:42]:       ActionInviteMembers,
+	_ActionLowerName[28:42]:  ActionInviteMembers,
+	_ActionName[42:60]:       ActionJoinGroupByLink,
+	_ActionLowerName[42:60]:  ActionJoinGroupByLink,
+	_ActionName[60:71]:       ActionPinMessage,
+	_ActionLowerName[60:71]:  ActionPinMessage,
+	_ActionName[71:85]:       ActionRemoveMembers,
+	_ActionLowerName[71:85]:  ActionRemoveMembers,
+	_ActionName[85:95]:       ActionPhoneCall,
+	_ActionLowerName[85:95]:  ActionPhoneCall,
+	_ActionName[95:108]:      ActionScoreInGame,
+	_ActionLowerName[95:108]: ActionScoreInGame,
 }
 
 var _ActionNames = []string{
@@ -60,6 +63,7 @@ var _ActionNames = []string{
 	_ActionName[60:71],
 	_ActionName[71:85],
 	_ActionName[85:95],
+	_ActionName[95:108],
 }
 
 // ActionString retrieves an enum value from the enum constants string name.
