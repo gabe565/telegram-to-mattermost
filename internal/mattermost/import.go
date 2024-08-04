@@ -1,7 +1,6 @@
 package mattermost
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -86,10 +85,7 @@ func DirectChannel(conf *config.Config) *imports.LineImportData {
 }
 
 func Post(conf *config.Config, team, channel string, msg *telegram.Message) (*imports.LineImportData, error) {
-	createAt, editAt, err := timestamps(msg)
-	if err != nil {
-		return nil, err
-	}
+	createAt, editAt := timestamps(msg)
 
 	attachments, err := transformAttachment(conf, msg)
 	if err != nil {
@@ -125,10 +121,7 @@ func Post(conf *config.Config, team, channel string, msg *telegram.Message) (*im
 }
 
 func DirectPost(conf *config.Config, msg *telegram.Message) (*imports.LineImportData, error) {
-	createAt, editAt, err := timestamps(msg)
-	if err != nil {
-		return nil, err
-	}
+	createAt, editAt := timestamps(msg)
 
 	attachments, err := transformAttachment(conf, msg)
 	if err != nil {
@@ -163,10 +156,7 @@ func DirectPost(conf *config.Config, msg *telegram.Message) (*imports.LineImport
 }
 
 func Reply(conf *config.Config, msg *telegram.Message) (*imports.ReplyImportData, error) {
-	createAt, editAt, err := timestamps(msg)
-	if err != nil {
-		return nil, err
-	}
+	createAt, editAt := timestamps(msg)
 
 	attachments, err := transformAttachment(conf, msg)
 	if err != nil {
@@ -184,31 +174,13 @@ func Reply(conf *config.Config, msg *telegram.Message) (*imports.ReplyImportData
 	}, nil
 }
 
-func timestamps(msg *telegram.Message) (*int64, *int64, error) {
-	createAt, err := transformTimestamp(&msg.Date)
-	if err != nil {
-		return nil, nil, err
+func timestamps(msg *telegram.Message) (*int64, *int64) {
+	createAt := msg.Date().UnixMilli()
+	var editAt *int64
+	if editedDate := msg.Edited(); editedDate != nil {
+		editAt = ptr.To(editedDate.UnixMilli())
 	}
-
-	editAt, err := transformTimestamp(msg.Edited)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return createAt, editAt, nil
-}
-
-func transformTimestamp(v *json.Number) (*int64, error) {
-	if v == nil {
-		return nil, nil
-	}
-
-	parsed, err := v.Int64()
-	if err != nil {
-		return nil, err
-	}
-	parsed *= 1000
-	return &parsed, nil
+	return &createAt, editAt
 }
 
 func transformReplies(conf *config.Config, msg *telegram.Message) (*[]imports.ReplyImportData, error) {

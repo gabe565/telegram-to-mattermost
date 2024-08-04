@@ -3,6 +3,9 @@ package telegram
 import (
 	"encoding/json"
 	"slices"
+	"time"
+
+	"k8s.io/utils/ptr"
 )
 
 type Export struct {
@@ -41,8 +44,8 @@ type Message struct {
 	ID   int64  `json:"id"`
 	Type string `json:"type"`
 
-	Date   json.Number  `json:"date_unixtime"`
-	Edited *json.Number `json:"edited_unixtime"`
+	DateUnix   json.Number  `json:"date_unixtime"`
+	EditedUnix *json.Number `json:"edited_unixtime"`
 
 	User
 
@@ -64,6 +67,25 @@ type Message struct {
 	Text         json.RawMessage `json:"text"`
 	DateString   json.RawMessage `json:"date"`
 	EditedString json.RawMessage `json:"edited"`
+}
+
+func (m *Message) Date() time.Time {
+	i, err := m.DateUnix.Int64()
+	if err != nil {
+		panic(err)
+	}
+	return time.Unix(i, 0)
+}
+
+func (m *Message) Edited() *time.Time {
+	if m.EditedUnix == nil {
+		return nil
+	}
+	i, err := m.EditedUnix.Int64()
+	if err != nil {
+		panic(err)
+	}
+	return ptr.To(time.Unix(i, 0))
 }
 
 type User struct {

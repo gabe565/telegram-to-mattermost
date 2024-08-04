@@ -108,7 +108,7 @@ func (m *Message) FormatText(maxLen uint) string {
 		}
 	}
 	if buf.Len() > int(maxLen) {
-		slog.Warn("Truncating message", "length", buf.Len(), "id", m.ID, "from", m.From, "timestamp", m.Date.String())
+		slog.Warn("Truncating message", "length", buf.Len(), "id", m.ID, "from", m.From, "timestamp", m.Date().String())
 		return buf.String()[:maxLen]
 	}
 	return buf.String()
