@@ -109,7 +109,7 @@ func (m *Message) FormatText(conf *config.Config) []string {
 		split := make([]string, 0, buf.Len()/int(conf.MaxTextLength)+1)
 		split = append(split, buf.String())
 		for len(split[len(split)-1]) > int(conf.MaxTextLength) {
-			curr, next := split[len(split)-1][:4000], split[len(split)-1][4000:]
+			curr, next := split[len(split)-1][:conf.MaxTextLength], split[len(split)-1][conf.MaxTextLength:]
 			split[len(split)-1] = curr
 			split = append(split, next)
 		}
