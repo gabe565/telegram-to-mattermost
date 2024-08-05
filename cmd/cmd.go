@@ -35,7 +35,7 @@ func run(cmd *cobra.Command, args []string) error {
 	config.InitLog(nil)
 	conf.Input = args[0]
 
-	export, err := telegram.FromFile(filepath.Join(conf.Input, "result.json"))
+	export, err := telegram.FromFile(filepath.Join(conf.Input, "result.json"), conf.AllowUnknownFields)
 	if err != nil {
 		return err
 	}

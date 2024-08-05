@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func FromFile(path string) (*Export, error) {
+func FromFile(path string, allowUnknown bool) (*Export, error) {
 	slog.Info("Loading Telegram export", "path", path)
 	f, err := os.Open(path)
 	if err != nil {
@@ -17,7 +17,9 @@ func FromFile(path string) (*Export, error) {
 	}()
 
 	decoder := json.NewDecoder(f)
-	decoder.DisallowUnknownFields()
+	if !allowUnknown {
+		decoder.DisallowUnknownFields()
+	}
 	export := &Export{}
 	if err := decoder.Decode(export); err != nil {
 		return nil, err

@@ -1,9 +1,10 @@
 package config
 
 type Config struct {
-	Input         string
-	Output        string
-	MaxTextLength uint
+	Input              string
+	Output             string
+	MaxTextLength      uint
+	AllowUnknownFields bool
 
 	CreateUsers bool
 	UserFile    string
