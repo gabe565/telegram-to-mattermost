@@ -60,6 +60,7 @@ type Message struct {
 	IsPinned *bool    `json:"-"`
 
 	// Unused fields
+	Emoticon     json.RawMessage `json:"emoticon"`
 	Text         json.RawMessage `json:"text"`
 	DateString   json.RawMessage `json:"date"`
 	EditedString json.RawMessage `json:"edited"`
