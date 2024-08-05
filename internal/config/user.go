@@ -7,6 +7,9 @@ func (u UserList) Usernames() []string {
 	for _, user := range u {
 		result = append(result, user.Username)
 	}
+	if len(result) == 1 {
+		result = append(result, result[0])
+	}
 	return result
 }
 
