@@ -19,7 +19,8 @@ func New() *cobra.Command {
 		RunE: run,
 		Args: cobra.ExactArgs(1),
 
-		SilenceErrors: true,
+		SilenceErrors:     true,
+		DisableAutoGenTag: true,
 	}
 	conf := config.New()
 	conf.RegisterFlags(cmd)
