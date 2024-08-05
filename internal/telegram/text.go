@@ -20,7 +20,7 @@ func (m *Message) FormatText(conf *config.Config) []string {
 			if e.Href != nil {
 				n += len(*e.Href)
 			}
-		case TypeBold:
+		case TypeBold, TypeStrikethrough:
 			n += 4
 		case TypeMentionName:
 			n++
