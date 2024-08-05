@@ -13,4 +13,5 @@ const (
 	ActionRemoveMembers
 	ActionPhoneCall
 	ActionScoreInGame
+	ActionEditChatTheme
 )
