@@ -20,4 +20,5 @@ const (
 	TypeStrikethrough
 	TypeBankCard
 	TypeCashtag
+	TypeSpoiler
 )

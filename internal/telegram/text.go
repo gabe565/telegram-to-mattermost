@@ -20,7 +20,7 @@ func (m *Message) FormatText(conf *config.Config) []string {
 			if e.Href != nil {
 				n += len(*e.Href)
 			}
-		case TypeBold, TypeStrikethrough:
+		case TypeBold, TypeStrikethrough, TypeSpoiler:
 			n += 4
 		case TypeMentionName:
 			n++
@@ -54,7 +54,7 @@ func (m *Message) FormatText(conf *config.Config) []string {
 				buf.WriteString(*e.Href)
 			}
 			buf.WriteByte(')')
-		case TypeStrikethrough:
+		case TypeStrikethrough, TypeSpoiler:
 			buf.WriteString("~~")
 			buf.WriteString(e.Text)
 			buf.WriteString("~~")
