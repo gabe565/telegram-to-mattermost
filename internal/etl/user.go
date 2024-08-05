@@ -35,20 +35,22 @@ func LoadUserMap(conf *config.Config, export *telegram.Export) error {
 
 		if user.Username == "" || (conf.CreateUsers && user.Email == "") {
 			tbl := table.New().
-				Row("ID:", tgUser.FromID).
-				Row("Name:", user.TelegramUsername).
-				Border(lipgloss.HiddenBorder()).
+				Row("ID", tgUser.FromID).
+				Row("Name", user.TelegramUsername).
+				BorderStyle(lipgloss.NewStyle().Foreground(lipgloss.Color("8"))).
 				StyleFunc(func(_, col int) lipgloss.Style {
+					s := lipgloss.NewStyle().Padding(0, 1)
 					if col == 0 {
-						return lipgloss.NewStyle().AlignHorizontal(lipgloss.Right)
+						s = s.AlignHorizontal(lipgloss.Right)
 					}
-					return lipgloss.NewStyle()
+					return s
 				})
 
 			if err := huh.NewForm(
 				huh.NewGroup(
 					huh.NewNote().
-						Title(fmt.Sprintf("Map Telegram user (%d/%d)\n%s", i+1, len(exportUsers), tbl.String())),
+						Title(fmt.Sprintf("Map Telegram User (%d/%d)", i+1, len(exportUsers))).
+						Description(tbl.String()),
 
 					huh.NewInput().
 						Title("Username").
@@ -60,7 +62,7 @@ func LoadUserMap(conf *config.Config, export *telegram.Export) error {
 						Validate(huh.ValidateNotEmpty()).
 						Value(&user.Email),
 				),
-			).Run(); err != nil {
+			).WithTheme(huh.ThemeDracula()).Run(); err != nil {
 				return err
 			}
 
