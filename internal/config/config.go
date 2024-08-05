@@ -6,6 +6,8 @@ type Config struct {
 	MaxTextLength      uint
 	AllowUnknownFields bool
 
+	TeamName string
+
 	CreateUsers bool
 	UserFile    string
 	Users       UserList

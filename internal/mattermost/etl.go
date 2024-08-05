@@ -20,6 +20,8 @@ import (
 	"golang.org/x/image/webp"
 )
 
+var ErrNoTeamName = errors.New("team name is required. Please rerun with --team-name")
+
 func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint64, error) { //nolint:gocyclo
 	slog.Info("Converting to Mattermost import", "path", conf.Output)
 
@@ -66,13 +68,17 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 	var team *imports.TeamImportData
 	var channel *imports.ChannelImportData
 	if channelType == importer.LineTypeChannel {
-		teamLine := Team(export)
+		if conf.TeamName == "" {
+			return 0, ErrNoTeamName
+		}
+
+		teamLine := Team(conf)
 		team = teamLine.Team
 		if err := encoder.Encode(teamLine); err != nil {
 			return 0, err
 		}
 
-		channelLine := Channel(team)
+		channelLine := Channel(export, team)
 		channel = channelLine.Channel
 		if err := encoder.Encode(channelLine); err != nil {
 			return 0, err
@@ -83,7 +89,7 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 		users := conf.Users.Unique()
 		slog.Info("Generating users", "count", len(users))
 		for _, user := range users {
-			if err := encoder.Encode(User(user, team)); err != nil {
+			if err := encoder.Encode(User(team, channel, user)); err != nil {
 				return 0, err
 			}
 		}

@@ -7,6 +7,8 @@ const (
 	MaxTextLengthFlag      = "max-text-length"
 	AllowUnknownFieldsFlag = "allow-unknown-fields"
 
+	TeamNameFlag = "team-name"
+
 	CreateUsersFlag = "create-users"
 
 	NoAttachmentsFlag = "no-attachments"
@@ -18,6 +20,8 @@ func (c *Config) RegisterFlags(cmd *cobra.Command) {
 	fs.StringVarP(&c.Output, OutputFlag, "o", c.Output, "Output filename")
 	fs.UintVar(&c.MaxTextLength, MaxTextLengthFlag, c.MaxTextLength, "Maximum post text length")
 	fs.BoolVar(&c.AllowUnknownFields, AllowUnknownFieldsFlag, c.AllowUnknownFields, "Allows unknown fields in the Telegram JSON file. Unsupported Telegram fields may be silently ignored!")
+
+	fs.StringVar(&c.TeamName, TeamNameFlag, c.TeamName, "Mattermost team name to import into")
 
 	fs.BoolVar(&c.CreateUsers, CreateUsersFlag, c.CreateUsers, "Adds users to Mattermost import")
 

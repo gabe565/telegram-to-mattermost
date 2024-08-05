@@ -51,7 +51,7 @@ func Version() *imports.LineImportData {
 	}
 }
 
-func User(user *config.User, team *imports.TeamImportData) *imports.LineImportData {
+func User(team *imports.TeamImportData, channel *imports.ChannelImportData, user *config.User) *imports.LineImportData {
 	userImport := &imports.UserImportData{
 		Username:           &user.Username,
 		Email:              &user.Email,
@@ -68,30 +68,34 @@ func User(user *config.User, team *imports.TeamImportData) *imports.LineImportDa
 		*userImport.Teams = append(*userImport.Teams, imports.UserTeamImportData{
 			Name:  team.Name,
 			Roles: ptr.To("team_user"),
+			Channels: &[]imports.UserChannelImportData{{
+				Name:  channel.Name,
+				Roles: ptr.To(model.ChannelUserRoleId),
+			}},
 		})
 	}
 
 	return &imports.LineImportData{Type: importer.LineTypeUser, User: userImport}
 }
 
-func Team(export *telegram.Export) *imports.LineImportData {
+func Team(conf *config.Config) *imports.LineImportData {
 	return &imports.LineImportData{
 		Type: importer.LineTypeTeam,
 		Team: &imports.TeamImportData{
-			Name:        ptr.To(xstrings.ToKebabCase(export.Name)),
-			DisplayName: ptr.To(export.Name),
+			Name:        ptr.To(xstrings.ToKebabCase(conf.TeamName)),
+			DisplayName: &conf.TeamName,
 			Type:        ptr.To("I"),
 		},
 	}
 }
 
-func Channel(team *imports.TeamImportData) *imports.LineImportData {
+func Channel(export *telegram.Export, team *imports.TeamImportData) *imports.LineImportData {
 	return &imports.LineImportData{
 		Type: importer.LineTypeChannel,
 		Channel: &imports.ChannelImportData{
 			Team:        team.Name,
-			Name:        team.Name,
-			DisplayName: team.DisplayName,
+			Name:        ptr.To(xstrings.ToKebabCase(export.Name)),
+			DisplayName: &export.Name,
 			Type:        ptr.To(model.ChannelTypePrivate),
 		},
 	}
