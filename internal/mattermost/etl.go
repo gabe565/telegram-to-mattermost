@@ -80,7 +80,7 @@ func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint
 	}
 
 	if conf.CreateUsers {
-		users := conf.Users
+		users := conf.Users.Unique()
 		slog.Info("Generating users", "count", len(users))
 		for _, user := range users {
 			if err := encoder.Encode(User(user, team)); err != nil {

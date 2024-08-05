@@ -1,6 +1,9 @@
 package config
 
-import "slices"
+import (
+	"maps"
+	"slices"
+)
 
 type UserList map[string]*User
 
@@ -11,8 +14,23 @@ func (u UserList) Usernames() []string {
 	}
 	if len(result) == 1 {
 		result = append(result, result[0])
+	} else {
+		slices.Sort(result)
+		result = slices.Compact(result)
 	}
-	slices.Sort(result)
+	return result
+}
+
+func (u UserList) Unique() UserList {
+	result := maps.Clone(u)
+	seen := make([]string, 0, len(result))
+	for k, v := range result {
+		if slices.Contains(seen, v.Username) {
+			delete(result, k)
+		} else {
+			seen = append(seen, v.Username)
+		}
+	}
 	return result
 }
 
