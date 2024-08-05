@@ -1,5 +1,7 @@
 package config
 
+import "slices"
+
 type UserList map[string]*User
 
 func (u UserList) Usernames() []string {
@@ -10,6 +12,7 @@ func (u UserList) Usernames() []string {
 	if len(result) == 1 {
 		result = append(result, result[0])
 	}
+	slices.Sort(result)
 	return result
 }
 
