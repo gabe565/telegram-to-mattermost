@@ -5,7 +5,7 @@ go 1.22.5
 require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
 	github.com/charmbracelet/huh v0.5.2
-	github.com/charmbracelet/lipgloss v0.12.1
+	github.com/charmbracelet/lipgloss v0.13.0
 	github.com/charmbracelet/log v0.4.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/huandu/xstrings v1.5.0
