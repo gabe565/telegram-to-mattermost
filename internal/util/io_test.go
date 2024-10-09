@@ -13,6 +13,6 @@ func TestSizeWriter(t *testing.T) {
 		w := SizeWriter{}
 		_, err := w.Write(make([]byte, i))
 		require.NoError(t, err)
-		assert.Equal(t, uint64(i), w.Size())
+		assert.Equal(t, uint64(i), w.Size()) //nolint:gosec
 	}
 }

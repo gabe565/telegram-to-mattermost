@@ -104,11 +104,11 @@ func (m *Message) FormatText(conf *config.Config) []string {
 			buf.WriteString("\n```")
 		}
 	}
-	if buf.Len() > int(conf.MaxTextLength) {
+	if buf.Len() > conf.MaxTextLength {
 		slog.Warn("Splitting message", "length", buf.Len(), "id", m.ID, "from", m.From, "timestamp", m.Date().String())
-		split := make([]string, 0, buf.Len()/int(conf.MaxTextLength)+1)
+		split := make([]string, 0, buf.Len()/conf.MaxTextLength+1)
 		split = append(split, buf.String())
-		for len(split[len(split)-1]) > int(conf.MaxTextLength) {
+		for len(split[len(split)-1]) > conf.MaxTextLength {
 			curr, next := split[len(split)-1][:conf.MaxTextLength], split[len(split)-1][conf.MaxTextLength:]
 			split[len(split)-1] = curr
 			split = append(split, next)

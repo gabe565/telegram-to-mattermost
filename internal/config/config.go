@@ -3,7 +3,7 @@ package config
 type Config struct {
 	Input              string
 	Output             string
-	MaxTextLength      uint
+	MaxTextLength      int
 	AllowUnknownFields bool
 
 	TeamName string

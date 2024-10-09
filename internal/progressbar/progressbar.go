@@ -16,7 +16,7 @@ const (
 	Right
 )
 
-func New(max int, alignDescription Align) *progressbar.ProgressBar {
+func New(total int, alignDescription Align) *progressbar.ProgressBar {
 	opts := []progressbar.Option{
 		progressbar.OptionSetWriter(os.Stderr),
 		progressbar.OptionFullWidth(),
@@ -33,7 +33,7 @@ func New(max int, alignDescription Align) *progressbar.ProgressBar {
 	if alignDescription == Right {
 		opts = append(opts, progressbar.OptionShowDescriptionAtLineEnd())
 	}
-	bar := progressbar.NewOptions(max, opts...)
+	bar := progressbar.NewOptions(total, opts...)
 	config.InitLog(bar)
 	return bar
 }
