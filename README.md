@@ -10,13 +10,13 @@ A command-line tool that converts Telegram exports to Mattermost data imports.
    2. Open the overflow menu in the top-right
    3. Export chat history
    4. Choose the options you desire, but ensure "Format" is set to "Machine-readable JSON"
-3. Build the tool.
+3. Install the tool.
    ```shell
-   go build .
+   go install github.com/gabe565/telegram-to-mattermost@latest
    ```
 4. Run the tool with the data export directory as a param, for example:
    ```shell
-   ./telegram-to-mattermost ~/Downloads/Telegram\ Desktop/ChatExport_2024-08-01
+   telegram-to-mattermost ~/Downloads/Telegram\ Desktop/ChatExport_2024-08-01
    ```
    - See [docs](./docs/telegram-to-mattermost.md) for command-line flags.
 5. Fill in the prompts to set up user mappings.
