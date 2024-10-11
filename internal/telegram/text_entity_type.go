@@ -1,6 +1,6 @@
 package telegram
 
-//go:generate enumer -type TextEntityType -trimprefix Type -transform snake -text -output text_entity_type_string.go
+//go:generate go run github.com/dmarkham/enumer -type TextEntityType -trimprefix Type -transform snake -text -output text_entity_type_string.go
 
 type TextEntityType uint8
 

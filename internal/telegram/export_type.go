@@ -1,6 +1,6 @@
 package telegram
 
-//go:generate enumer -type ExportType -trimprefix Type -transform snake -text -output export_type_string.go
+//go:generate go run github.com/dmarkham/enumer -type ExportType -trimprefix Type -transform snake -text -output export_type_string.go
 
 type ExportType uint8
 

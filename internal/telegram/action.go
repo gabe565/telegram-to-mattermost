@@ -1,6 +1,6 @@
 package telegram
 
-//go:generate enumer -type Action -trimprefix Action -transform snake -text -output action_string.go
+//go:generate go run github.com/dmarkham/enumer -type Action -trimprefix Action -transform snake -text -output action_string.go
 
 type Action uint8
 
