@@ -14,7 +14,7 @@ require (
 	github.com/mattermost/mattermost/server/v8 v8.0.0-20240730231005-b1fd445fcc19
 	github.com/mcuadros/go-defaults v1.2.0
 	github.com/muesli/termenv v0.15.2
-	github.com/pelletier/go-toml/v2 v2.2.2
+	github.com/pelletier/go-toml/v2 v2.2.3
 	github.com/schollz/progressbar/v3 v3.14.6
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
