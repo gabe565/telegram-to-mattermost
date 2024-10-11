@@ -10,7 +10,7 @@ require (
 	github.com/dmarkham/enumer v1.5.10
 	github.com/dustin/go-humanize v1.0.1
 	github.com/huandu/xstrings v1.5.0
-	github.com/mattermost/mattermost/server/public v0.1.6
+	github.com/mattermost/mattermost/server/public v0.1.7
 	github.com/mattermost/mattermost/server/v8 v8.0.0-20240730231005-b1fd445fcc19
 	github.com/mcuadros/go-defaults v1.2.0
 	github.com/muesli/termenv v0.15.2
