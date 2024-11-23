@@ -17,7 +17,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.2
 	github.com/schollz/progressbar/v3 v3.14.6
 	github.com/spf13/cobra v1.8.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	golang.org/x/image v0.18.0
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8
 )
