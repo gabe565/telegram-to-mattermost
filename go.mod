@@ -8,8 +8,8 @@ require (
 	github.com/charmbracelet/lipgloss v0.12.1
 	github.com/charmbracelet/log v0.4.0
 	github.com/dmarkham/enumer v1.5.10
-	github.com/dustin/go-humanize v1.0.1
 	github.com/huandu/xstrings v1.5.0
+	github.com/labstack/gommon v0.4.2
 	github.com/mattermost/mattermost/server/public v0.1.6
 	github.com/mattermost/mattermost/server/v8 v8.0.0-20240730231005-b1fd445fcc19
 	github.com/mcuadros/go-defaults v1.2.0
@@ -36,6 +36,7 @@ require (
 	github.com/charmbracelet/x/windows v0.1.2 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
+	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dyatlov/go-opengraph/opengraph v0.0.0-20220524092352-606d7b1e5f8a // indirect
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
 	github.com/fatih/color v1.17.0 // indirect

@@ -22,7 +22,7 @@ import (
 
 var ErrNoTeamName = errors.New("team name is required. Please rerun with --team-name")
 
-func TransformTelegramExport(conf *config.Config, export *telegram.Export) (uint64, error) { //nolint:gocyclo
+func TransformTelegramExport(conf *config.Config, export *telegram.Export) (int64, error) { //nolint:gocyclo
 	slog.Info("Converting to Mattermost import", "path", conf.Output)
 
 	f, err := os.Create(conf.Output)
