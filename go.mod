@@ -1,6 +1,6 @@
 module github.com/gabe565/telegram-to-mattermost
 
-go 1.22.5
+go 1.23.5
 
 require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
