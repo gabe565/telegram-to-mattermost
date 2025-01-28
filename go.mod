@@ -11,7 +11,7 @@ require (
 	github.com/huandu/xstrings v1.5.0
 	github.com/labstack/gommon v0.4.2
 	github.com/mattermost/mattermost/server/public v0.1.6
-	github.com/mattermost/mattermost/server/v8 v8.0.0-20240730231005-b1fd445fcc19
+	github.com/mattermost/mattermost/server/v8 v8.0.0-20250128072437-7cd025d1fb2e
 	github.com/mcuadros/go-defaults v1.2.0
 	github.com/muesli/termenv v0.15.2
 	github.com/pelletier/go-toml/v2 v2.2.2
@@ -89,7 +89,7 @@ require (
 	golang.org/x/mod v0.19.0 // indirect
 	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/sys v0.24.0 // indirect
 	golang.org/x/term v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/tools v0.23.0 // indirect
