@@ -5,12 +5,12 @@ import (
 	"log/slog"
 	"path/filepath"
 
+	"gabe565.com/utils/bytefmt"
 	"github.com/gabe565/telegram-to-mattermost/internal/config"
 	"github.com/gabe565/telegram-to-mattermost/internal/etl"
 	"github.com/gabe565/telegram-to-mattermost/internal/mattermost"
 	"github.com/gabe565/telegram-to-mattermost/internal/telegram"
 	"github.com/gabe565/telegram-to-mattermost/internal/util"
-	"github.com/labstack/gommon/bytes"
 	"github.com/spf13/cobra"
 )
 
@@ -52,7 +52,7 @@ func run(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	slog.Info("Success!", "path", conf.Output, "size", bytes.Format(size))
+	slog.Info("Success!", "path", conf.Output, "size", bytefmt.Encode(size))
 	util.PrintPostRun(cmd)
 	return nil
 }

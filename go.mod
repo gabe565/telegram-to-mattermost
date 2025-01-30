@@ -3,13 +3,13 @@ module github.com/gabe565/telegram-to-mattermost
 go 1.23.5
 
 require (
+	gabe565.com/utils v0.0.0-20250130072635-ed882da6fcdd
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
 	github.com/charmbracelet/huh v0.5.2
 	github.com/charmbracelet/lipgloss v0.12.1
 	github.com/charmbracelet/log v0.4.0
 	github.com/dmarkham/enumer v1.5.10
 	github.com/huandu/xstrings v1.5.0
-	github.com/labstack/gommon v0.4.2
 	github.com/mattermost/mattermost/server/public v0.1.6
 	github.com/mattermost/mattermost/server/v8 v8.0.0-20240730231005-b1fd445fcc19
 	github.com/mcuadros/go-defaults v1.2.0
@@ -39,7 +39,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dyatlov/go-opengraph/opengraph v0.0.0-20220524092352-606d7b1e5f8a // indirect
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
-	github.com/fatih/color v1.17.0 // indirect
+	github.com/fatih/color v1.18.0 // indirect
 	github.com/francoispqt/gojay v1.2.13 // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.7 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
@@ -89,7 +89,7 @@ require (
 	golang.org/x/mod v0.19.0 // indirect
 	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/sys v0.26.0 // indirect
 	golang.org/x/term v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/tools v0.23.0 // indirect
