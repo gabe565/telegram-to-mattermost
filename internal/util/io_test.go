@@ -3,12 +3,13 @@ package util
 import (
 	"testing"
 
+	"gabe565.com/utils/bytefmt"
 	"github.com/bmizerany/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSizeWriter(t *testing.T) {
-	for _, i := range []int{1, 1024, 1024 * 1024, 1024 * 1024 * 1024} {
+	for _, i := range []int{1, bytefmt.KiB, bytefmt.MiB, bytefmt.GiB} {
 		w := SizeWriter{}
 		_, err := w.Write(make([]byte, i))
 		require.NoError(t, err)
