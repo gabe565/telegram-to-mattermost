@@ -1,6 +1,6 @@
 module github.com/gabe565/telegram-to-mattermost
 
-go 1.23.5
+go 1.23.6
 
 require (
 	gabe565.com/utils v0.0.0-20250130072635-ed882da6fcdd
