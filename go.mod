@@ -3,7 +3,7 @@ module github.com/gabe565/telegram-to-mattermost
 go 1.23.5
 
 require (
-	gabe565.com/utils v0.0.0-20250130072635-ed882da6fcdd
+	gabe565.com/utils v0.0.0-20250203234441-e4ad4d8bf6fc
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
 	github.com/charmbracelet/huh v0.5.2
 	github.com/charmbracelet/lipgloss v0.12.1
@@ -17,7 +17,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.2
 	github.com/schollz/progressbar/v3 v3.14.6
 	github.com/spf13/cobra v1.8.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	golang.org/x/image v0.18.0
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8
 )
