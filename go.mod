@@ -3,7 +3,7 @@ module github.com/gabe565/telegram-to-mattermost
 go 1.23.5
 
 require (
-	gabe565.com/utils v0.0.0-20250130072635-ed882da6fcdd
+	gabe565.com/utils v0.0.0-20260511235214-4059440fa83b
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869
 	github.com/charmbracelet/huh v0.5.2
 	github.com/charmbracelet/lipgloss v0.12.1
@@ -16,8 +16,8 @@ require (
 	github.com/muesli/termenv v0.15.2
 	github.com/pelletier/go-toml/v2 v2.2.2
 	github.com/schollz/progressbar/v3 v3.14.6
-	github.com/spf13/cobra v1.8.1
-	github.com/stretchr/testify v1.9.0
+	github.com/spf13/cobra v1.10.1
+	github.com/stretchr/testify v1.11.1
 	golang.org/x/image v0.18.0
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8
 )
@@ -34,7 +34,7 @@ require (
 	github.com/charmbracelet/x/input v0.1.3 // indirect
 	github.com/charmbracelet/x/term v0.1.1 // indirect
 	github.com/charmbracelet/x/windows v0.1.2 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dyatlov/go-opengraph/opengraph v0.0.0-20220524092352-606d7b1e5f8a // indirect
@@ -77,7 +77,7 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/tinylib/msgp v1.2.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
