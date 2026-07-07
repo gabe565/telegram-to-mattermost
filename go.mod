@@ -1,6 +1,6 @@
 module github.com/gabe565/telegram-to-mattermost
 
-go 1.23.5
+go 1.25
 
 require (
 	gabe565.com/utils v0.0.0-20250130072635-ed882da6fcdd
@@ -19,7 +19,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/image v0.18.0
-	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8
+	k8s.io/utils v0.0.0-20260707023825-cf1189d6abe3
 )
 
 require (
